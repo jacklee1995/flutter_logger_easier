@@ -1,5 +1,4 @@
 import 'package:logger_easier/logger_easier.dart';
-import 'package:logger_easier/src/core/log_level.dart';
 import 'package:logger_easier/src/core/log_record.dart';
 import 'package:logger_easier/src/error_reporting/error_reporter.dart';
 import 'package:logger_easier/src/performance/performance_monitor.dart';
@@ -16,7 +15,6 @@ import 'logger_easier_test.mocks.dart';
   ErrorReporter,
   LogMiddleware,
   BasePrinter,
-  BaseOutput,
   LogFormatter,
   LogFilter
 ])

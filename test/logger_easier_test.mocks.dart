@@ -3,19 +3,18 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i7;
+import 'dart:async' as _i6;
 
-import 'package:logger_easier/src/core/log_level.dart' as _i12;
-import 'package:logger_easier/src/core/log_record.dart' as _i11;
-import 'package:logger_easier/src/error_reporting/error_reporter.dart' as _i9;
-import 'package:logger_easier/src/filters/log_filter.dart' as _i5;
-import 'package:logger_easier/src/interfaces/base_output.dart' as _i3;
+import 'package:logger_easier/src/core/log_level.dart' as _i11;
+import 'package:logger_easier/src/core/log_record.dart' as _i10;
+import 'package:logger_easier/src/error_reporting/error_reporter.dart' as _i8;
+import 'package:logger_easier/src/filters/log_filter.dart' as _i4;
 import 'package:logger_easier/src/interfaces/base_printer.dart' as _i2;
-import 'package:logger_easier/src/interfaces/log_formatter.dart' as _i4;
-import 'package:logger_easier/src/middleware/log_middlewares.dart' as _i10;
-import 'package:logger_easier/src/performance/performance_monitor.dart' as _i6;
+import 'package:logger_easier/src/interfaces/log_formatter.dart' as _i3;
+import 'package:logger_easier/src/middleware/log_middlewares.dart' as _i9;
+import 'package:logger_easier/src/performance/performance_monitor.dart' as _i5;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i8;
+import 'package:mockito/src/dummies.dart' as _i7;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -40,8 +39,8 @@ class _FakeBasePrinter_0 extends _i1.SmartFake implements _i2.BasePrinter {
         );
 }
 
-class _FakeBaseOutput_1 extends _i1.SmartFake implements _i3.BaseOutput {
-  _FakeBaseOutput_1(
+class _FakeLogFormatter_1 extends _i1.SmartFake implements _i3.LogFormatter {
+  _FakeLogFormatter_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -50,18 +49,8 @@ class _FakeBaseOutput_1 extends _i1.SmartFake implements _i3.BaseOutput {
         );
 }
 
-class _FakeLogFormatter_2 extends _i1.SmartFake implements _i4.LogFormatter {
-  _FakeLogFormatter_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeLogFilter_3 extends _i1.SmartFake implements _i5.LogFilter {
-  _FakeLogFilter_3(
+class _FakeLogFilter_2 extends _i1.SmartFake implements _i4.LogFilter {
+  _FakeLogFilter_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -74,7 +63,7 @@ class _FakeLogFilter_3 extends _i1.SmartFake implements _i5.LogFilter {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPerformanceMonitor extends _i1.Mock
-    implements _i6.PerformanceMonitor {
+    implements _i5.PerformanceMonitor {
   MockPerformanceMonitor() {
     _i1.throwOnMissingStub(this);
   }
@@ -86,14 +75,14 @@ class MockPerformanceMonitor extends _i1.Mock
       ) as bool);
 
   @override
-  _i7.Future<void> initialize() => (super.noSuchMethod(
+  _i6.Future<void> initialize() => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
   Map<String, num> getMetrics() => (super.noSuchMethod(
@@ -214,24 +203,24 @@ class MockPerformanceMonitor extends _i1.Mock
       );
 
   @override
-  _i7.Future<void> collectMemoryMetrics() => (super.noSuchMethod(
+  _i6.Future<void> collectMemoryMetrics() => (super.noSuchMethod(
         Invocation.method(
           #collectMemoryMetrics,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i7.Future<void> collectCpuMetrics() => (super.noSuchMethod(
+  _i6.Future<void> collectCpuMetrics() => (super.noSuchMethod(
         Invocation.method(
           #collectCpuMetrics,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
   void analyzePerformanceBottlenecks() => super.noSuchMethod(
@@ -248,7 +237,7 @@ class MockPerformanceMonitor extends _i1.Mock
           #generatePerformanceReport,
           [],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #generatePerformanceReport,
@@ -258,36 +247,36 @@ class MockPerformanceMonitor extends _i1.Mock
       ) as String);
 
   @override
-  _i7.Future<void> close() => (super.noSuchMethod(
+  _i6.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 }
 
 /// A class which mocks [ErrorReporter].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockErrorReporter extends _i1.Mock implements _i9.ErrorReporter {
+class MockErrorReporter extends _i1.Mock implements _i8.ErrorReporter {
   MockErrorReporter() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i7.Future<void> initialize() => (super.noSuchMethod(
+  _i6.Future<void> initialize() => (super.noSuchMethod(
         Invocation.method(
           #initialize,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i7.Future<void> reportError(
+  _i6.Future<void> reportError(
     dynamic error,
     StackTrace? stackTrace,
   ) =>
@@ -299,25 +288,25 @@ class MockErrorReporter extends _i1.Mock implements _i9.ErrorReporter {
             stackTrace,
           ],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i7.Future<void> close() => (super.noSuchMethod(
+  _i6.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 }
 
 /// A class which mocks [LogMiddleware].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogMiddleware extends _i1.Mock implements _i10.LogMiddleware {
+class MockLogMiddleware extends _i1.Mock implements _i9.LogMiddleware {
   MockLogMiddleware() {
     _i1.throwOnMissingStub(this);
   }
@@ -332,51 +321,42 @@ class MockLogMiddleware extends _i1.Mock implements _i10.LogMiddleware {
       ) as _i2.BasePrinter);
 
   @override
-  _i3.BaseOutput get output => (super.noSuchMethod(
-        Invocation.getter(#output),
-        returnValue: _FakeBaseOutput_1(
-          this,
-          Invocation.getter(#output),
-        ),
-      ) as _i3.BaseOutput);
-
-  @override
-  _i4.LogFormatter get formatter => (super.noSuchMethod(
+  _i3.LogFormatter get formatter => (super.noSuchMethod(
         Invocation.getter(#formatter),
-        returnValue: _FakeLogFormatter_2(
+        returnValue: _FakeLogFormatter_1(
           this,
           Invocation.getter(#formatter),
         ),
-      ) as _i4.LogFormatter);
+      ) as _i3.LogFormatter);
 
   @override
-  _i5.LogFilter get filter => (super.noSuchMethod(
+  _i4.LogFilter get filter => (super.noSuchMethod(
         Invocation.getter(#filter),
-        returnValue: _FakeLogFilter_3(
+        returnValue: _FakeLogFilter_2(
           this,
           Invocation.getter(#filter),
         ),
-      ) as _i5.LogFilter);
+      ) as _i4.LogFilter);
 
   @override
-  _i7.Future<void> handle(_i11.LogRecord? record) => (super.noSuchMethod(
+  _i6.Future<void> handle(_i10.LogRecord? record) => (super.noSuchMethod(
         Invocation.method(
           #handle,
           [record],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i7.Future<void> close() => (super.noSuchMethod(
+  _i6.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 }
 
 /// A class which mocks [BasePrinter].
@@ -390,7 +370,7 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
   @override
   String get name => (super.noSuchMethod(
         Invocation.getter(#name),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.getter(#name),
         ),
@@ -415,12 +395,12 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
       ) as List<String>);
 
   @override
-  String printf(_i11.LogRecord? record) => (super.noSuchMethod(
+  String printf(_i10.LogRecord? record) => (super.noSuchMethod(
         Invocation.method(
           #printf,
           [record],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #printf,
@@ -430,35 +410,35 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
       ) as String);
 
   @override
-  _i7.Future<void> init() => (super.noSuchMethod(
+  _i6.Future<void> init() => (super.noSuchMethod(
         Invocation.method(
           #init,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i7.Future<void> close() => (super.noSuchMethod(
+  _i6.Future<void> close() => (super.noSuchMethod(
         Invocation.method(
           #close,
           [],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
-  _i7.Future<void> updateConfig(Map<String, dynamic>? newConfig) =>
+  _i6.Future<void> updateConfig(Map<String, dynamic>? newConfig) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateConfig,
           [newConfig],
         ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
+        returnValue: _i6.Future<void>.value(),
+        returnValueForMissingStub: _i6.Future<void>.value(),
+      ) as _i6.Future<void>);
 
   @override
   void setColorSupport(bool? enabled) => super.noSuchMethod(
@@ -500,7 +480,7 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
             stackTrace,
           ],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #formatError,
@@ -518,7 +498,7 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
           #formatMessage,
           [message],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #formatMessage,
@@ -528,12 +508,12 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
       ) as String);
 
   @override
-  String getLevelColor(_i12.LogLevel? level) => (super.noSuchMethod(
+  String getLevelColor(_i11.LogLevel? level) => (super.noSuchMethod(
         Invocation.method(
           #getLevelColor,
           [level],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #getLevelColor,
@@ -543,12 +523,12 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
       ) as String);
 
   @override
-  String getLevelFgColor(_i12.LogLevel? level) => (super.noSuchMethod(
+  String getLevelFgColor(_i11.LogLevel? level) => (super.noSuchMethod(
         Invocation.method(
           #getLevelFgColor,
           [level],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #getLevelFgColor,
@@ -558,12 +538,12 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
       ) as String);
 
   @override
-  String getLevelBgColor(_i12.LogLevel? level) => (super.noSuchMethod(
+  String getLevelBgColor(_i11.LogLevel? level) => (super.noSuchMethod(
         Invocation.method(
           #getLevelBgColor,
           [level],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #getLevelBgColor,
@@ -573,118 +553,10 @@ class MockBasePrinter extends _i1.Mock implements _i2.BasePrinter {
       ) as String);
 }
 
-/// A class which mocks [BaseOutput].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockBaseOutput extends _i1.Mock implements _i3.BaseOutput {
-  MockBaseOutput() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  bool get isClosed => (super.noSuchMethod(
-        Invocation.getter(#isClosed),
-        returnValue: false,
-      ) as bool);
-
-  @override
-  String get name => (super.noSuchMethod(
-        Invocation.getter(#name),
-        returnValue: _i8.dummyValue<String>(
-          this,
-          Invocation.getter(#name),
-        ),
-      ) as String);
-
-  @override
-  Map<String, dynamic> get config => (super.noSuchMethod(
-        Invocation.getter(#config),
-        returnValue: <String, dynamic>{},
-      ) as Map<String, dynamic>);
-
-  @override
-  _i7.Future<void> write(String? log) => (super.noSuchMethod(
-        Invocation.method(
-          #write,
-          [log],
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
-  _i7.Future<void> flush() => (super.noSuchMethod(
-        Invocation.method(
-          #flush,
-          [],
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
-  _i7.Future<void> close() => (super.noSuchMethod(
-        Invocation.method(
-          #close,
-          [],
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
-  _i7.Future<void> updateConfig(Map<String, dynamic>? newConfig) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #updateConfig,
-          [newConfig],
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
-  _i7.Future<bool> isReady() => (super.noSuchMethod(
-        Invocation.method(
-          #isReady,
-          [],
-        ),
-        returnValue: _i7.Future<bool>.value(false),
-      ) as _i7.Future<bool>);
-
-  @override
-  _i7.Future<void> reopen() => (super.noSuchMethod(
-        Invocation.method(
-          #reopen,
-          [],
-        ),
-        returnValue: _i7.Future<void>.value(),
-        returnValueForMissingStub: _i7.Future<void>.value(),
-      ) as _i7.Future<void>);
-
-  @override
-  Map<String, dynamic> getStats() => (super.noSuchMethod(
-        Invocation.method(
-          #getStats,
-          [],
-        ),
-        returnValue: <String, dynamic>{},
-      ) as Map<String, dynamic>);
-
-  @override
-  void resetStats() => super.noSuchMethod(
-        Invocation.method(
-          #resetStats,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-}
-
 /// A class which mocks [LogFormatter].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogFormatter extends _i1.Mock implements _i4.LogFormatter {
+class MockLogFormatter extends _i1.Mock implements _i3.LogFormatter {
   MockLogFormatter() {
     _i1.throwOnMissingStub(this);
   }
@@ -692,7 +564,7 @@ class MockLogFormatter extends _i1.Mock implements _i4.LogFormatter {
   @override
   String get name => (super.noSuchMethod(
         Invocation.getter(#name),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.getter(#name),
         ),
@@ -711,12 +583,12 @@ class MockLogFormatter extends _i1.Mock implements _i4.LogFormatter {
       ) as List<String>);
 
   @override
-  String format(_i11.LogRecord? record) => (super.noSuchMethod(
+  String format(_i10.LogRecord? record) => (super.noSuchMethod(
         Invocation.method(
           #format,
           [record],
         ),
-        returnValue: _i8.dummyValue<String>(
+        returnValue: _i7.dummyValue<String>(
           this,
           Invocation.method(
             #format,
@@ -735,19 +607,19 @@ class MockLogFormatter extends _i1.Mock implements _i4.LogFormatter {
       );
 
   @override
-  _i4.LogFormatter clone() => (super.noSuchMethod(
+  _i3.LogFormatter clone() => (super.noSuchMethod(
         Invocation.method(
           #clone,
           [],
         ),
-        returnValue: _FakeLogFormatter_2(
+        returnValue: _FakeLogFormatter_1(
           this,
           Invocation.method(
             #clone,
             [],
           ),
         ),
-      ) as _i4.LogFormatter);
+      ) as _i3.LogFormatter);
 
   @override
   bool isValidFormatString(String? formatString) => (super.noSuchMethod(
@@ -762,13 +634,13 @@ class MockLogFormatter extends _i1.Mock implements _i4.LogFormatter {
 /// A class which mocks [LogFilter].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLogFilter extends _i1.Mock implements _i5.LogFilter {
+class MockLogFilter extends _i1.Mock implements _i4.LogFilter {
   MockLogFilter() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  bool shouldLog(_i11.LogRecord? record) => (super.noSuchMethod(
+  bool shouldLog(_i10.LogRecord? record) => (super.noSuchMethod(
         Invocation.method(
           #shouldLog,
           [record],

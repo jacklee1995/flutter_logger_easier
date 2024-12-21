@@ -1,8 +1,6 @@
 import 'dart:async';
 import '../filters/level_filter.dart';
 import '../formatters/simple_formatter.dart';
-import '../outputs/console_output.dart';
-import '../outputs/file_output.dart';
 import '../printers/console_printer.dart';
 import '../printers/file_printer.dart';
 import 'log_level.dart';
@@ -97,7 +95,6 @@ class Logger {
             maxLineLength: 120,
             outputFunction: outputFunction,
           ),
-          output: ConsoleOutput(useColor: true),
           formatter: SimpleFormatter(),
           filter: LevelFilter(defaultMinLevel),
         ),
@@ -109,12 +106,6 @@ class Logger {
             maxFileSize: maxFileSize ?? 5 * 1024 * 1024, // 5MB
             maxBackupIndex: maxBackupIndex ?? 3,
             compress: compress ?? true,
-          ),
-          output: FileOutput(
-            directory: logDirectory,
-            baseFilename: baseFileName ?? 'app.log',
-            maxFileSize: maxFileSize ?? 5 * 1024 * 1024, // 5MB
-            maxBackupCount: maxBackupIndex ?? 3,
           ),
           filter: LevelFilter(LogLevel.info), // 文件只记录 info 及以上级别
           formatter: SimpleFormatter(),
@@ -130,7 +121,7 @@ class Logger {
           maxLineLength: 120,
           outputFunction: outputFunction,
         ),
-        output: ConsoleOutput(useColor: true),
+        // output: ConsoleOutput(useColor: true),
         formatter: SimpleFormatter(),
         filter: LevelFilter(defaultMinLevel),
       ),

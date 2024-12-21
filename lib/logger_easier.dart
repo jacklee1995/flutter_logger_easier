@@ -6,7 +6,6 @@ export 'src/core/log_level.dart';
 export 'src/filters/level_filter.dart';
 export 'src/filters/log_filter.dart';
 
-export 'src/interfaces/base_output.dart';
 export 'src/interfaces/base_printer.dart';
 export 'src/interfaces/log_formatter.dart';
 

@@ -1,6 +1,5 @@
 import '../core/log_record.dart';
 import '../interfaces/base_printer.dart';
-import '../interfaces/base_output.dart';
 import '../interfaces/log_formatter.dart';
 import '../filters/log_filter.dart';
 
@@ -9,7 +8,7 @@ import '../filters/log_filter.dart';
 /// 负责处理单个日志记录的整个流程，包括过滤、格式化、打印和输出
 class LogMiddleware {
   final BasePrinter printer;
-  final BaseOutput output;
+  // final BaseOutput output;
   final LogFormatter formatter;
   final LogFilter filter;
 
@@ -21,7 +20,7 @@ class LogMiddleware {
   /// [filter] 日志过滤器
   LogMiddleware({
     required this.printer,
-    required this.output,
+    // required this.output,
     required this.formatter,
     required this.filter,
   });
@@ -36,10 +35,7 @@ class LogMiddleware {
 
     try {
       // 使用打印器处理日志记录
-      final printedLog = printer.printf(record);
-
-      // 直接输出打印后的日志
-      await output.write(printedLog);
+      printer.printf(record);
     } catch (e, stackTrace) {
       print('Error handling log record: $e');
       print('Stack trace: $stackTrace');
@@ -51,6 +47,6 @@ class LogMiddleware {
   /// 这个方法应该被调用来清理任何资源，比如关闭文件或网络连接
   Future<void> close() async {
     await printer.close();
-    await output.close();
+    // await output.close();
   }
 }
