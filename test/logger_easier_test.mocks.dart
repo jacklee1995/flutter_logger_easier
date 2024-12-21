@@ -8,7 +8,7 @@ import 'dart:async' as _i6;
 import 'package:logger_easier/src/core/log_level.dart' as _i11;
 import 'package:logger_easier/src/core/log_record.dart' as _i10;
 import 'package:logger_easier/src/error_reporting/error_reporter.dart' as _i8;
-import 'package:logger_easier/src/filters/log_filter.dart' as _i4;
+import 'package:logger_easier/src/interfaces/log_filter.dart' as _i4;
 import 'package:logger_easier/src/interfaces/base_printer.dart' as _i2;
 import 'package:logger_easier/src/interfaces/log_formatter.dart' as _i3;
 import 'package:logger_easier/src/middleware/log_middlewares.dart' as _i9;

@@ -14,6 +14,7 @@ dependencies:
     # When depending on this package from a real application you should use:
     #   logger_easier: ^x.y.z
     path: ../
+  path: ^1.9.1
   path_provider: ^2.1.5
 
 dev_dependencies:

@@ -84,7 +84,8 @@ class Logger {
   }) {
     // 设置默认最小日志级别
     final LogLevel defaultMinLevel = minLevel ?? LogLevel.debug;
-
+    print('middlewares = $middlewares');
+    print('logDirectory = $logDirectory');
     // 如果没有传入middlewares，但传入了logDirectory，自动创建文件日志中间件
     if (middlewares == null && logDirectory != null) {
       middlewares = [
@@ -121,7 +122,6 @@ class Logger {
           maxLineLength: 120,
           outputFunction: outputFunction,
         ),
-        // output: ConsoleOutput(useColor: true),
         formatter: SimpleFormatter(),
         filter: LevelFilter(defaultMinLevel),
       ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:intl/intl.dart';
 import 'package:stack_trace/stack_trace.dart';
 import '../core/log_level.dart';
 import '../core/log_record.dart';
@@ -8,7 +9,7 @@ import '../core/log_record.dart';
 class LogUtils {
   /// 获取当前时间戳
   static String getTimestamp() {
-    return DateTime.now().toIso8601String();
+    return DateFormat('yyyy/MM/dd HH:mm:ss SSSSSS').format(DateTime.now());
   }
 
   /// 获取调用栈信息

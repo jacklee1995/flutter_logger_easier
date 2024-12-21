@@ -1,6 +1,6 @@
 import '../core/log_level.dart';
 import '../core/log_record.dart';
-import 'log_filter.dart';
+import '../interfaces/log_filter.dart';
 
 /// 基于日志级别的过滤器
 class LevelFilter implements LogFilter {
