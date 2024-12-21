@@ -1,9 +1,9 @@
 name: logger_easier
 description: A modern logging management solution tailored specifically for Dart and Flutter applications. It provides a highly flexible and feature-rich logging system designed to simplify developers' log management while offering significant customization capabilities.
-homepage: https://github.com/jacklee1995/widgets_easier
-repository: https://github.com/jacklee1995/widgets_easier
+homepage: https://github.com/jacklee1995/flutter_logger_easier
+repository: https://github.com/jacklee1995/flutter_logger_easier
 
-version: 0.0.1
+version: 0.0.1+1
 
 environment:
   sdk: ^3.5.4

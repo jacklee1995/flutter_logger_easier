@@ -4,7 +4,7 @@
 
 Logger Easier is a modern logging management solution tailored specifically for Dart and Flutter applications. It provides a highly flexible and feature-rich logging system designed to simplify developers' log management while offering significant customization capabilities.
 
-![alt text](example.png)
+![alt text](https://github.com/jacklee1995/flutter_logger_easier/blob/master/example.png)
 
 ## ✨ Core Features
 
