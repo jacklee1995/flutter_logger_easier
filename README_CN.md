@@ -1,6 +1,6 @@
 # Logger Easier
 
-![alt text](jclee95_flutter_logger_easier.png)
+![alt text](logo.jpg)
 
 ## 🌟 项目简介
 
