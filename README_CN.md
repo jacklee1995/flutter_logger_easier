@@ -1,5 +1,7 @@
 # Logger Easier
 
+![alt text](jclee95_flutter_logger_easier.png)
+
 ## 🌟 项目简介
 
 Logger Easier 是一个为 Dart 和 Flutter 应用程序量身定制的现代化日志管理解决方案。它提供了一个高度灵活、功能丰富的日志记录系统，旨在简化开发者的日志管理工作，同时提供一定的定制能力。
