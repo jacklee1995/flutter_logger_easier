@@ -1,6 +1,6 @@
 # Logger Easier
 
-![alt text](logo.jpg)
+![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/logo.jpg)
 
 ## 🌟 项目简介
 
