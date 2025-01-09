@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: json_middleware_for_logger_easier,logger_easier
+dependency_overrides:
+  json_middleware_for_logger_easier:
+    path: ..
+  logger_easier:
+    path: ..\\..\\logger_easier

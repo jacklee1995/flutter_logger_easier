@@ -1,0 +1,144 @@
+name: flutter_logger_easier
+repository: https://github.com/jacklee1995/flutter_logger_easier
+sdkPath: .fvm/flutter_sdk
+
+packages:
+  - packages/**
+  - plugins/**
+  - examples/**
+
+command:
+  version:
+    linkToCommits: true     # 在包的更新日志中生成提交链接
+    branch: master          # 只允许在 master 分支上进行版本控制
+    workspaceChangelog: true # 在工作空间根目录额外构建一个更新日志
+
+scripts:
+  # 设备管理
+  list:devices:
+    run: fvm flutter devices
+    description: 列出所有连接的设备
+
+  # 运行各平台应用
+  android:
+    run: melos exec --scope="rm_android" -- fvm flutter run
+    description: 在连接的设备或模拟器上运行 Android 应用
+
+  ios:
+    run: melos exec --scope="rm_ios" -- fvm flutter run
+    description: 在连接的设备或模拟器上运行 iOS 应用
+
+  windows:
+    run: melos exec --scope="rm_windows" -- fvm flutter run -d windows
+    description: 运行 Windows 应用
+
+  macos:
+    run: melos exec --scope="rm_macos" -- fvm flutter run -d macos
+    description: 运行 macOS 应用
+
+  linux:
+    run: melos exec --scope="rm_linux" -- fvm flutter run -d linux
+    description: 运行 Linux 应用
+
+  # 测试
+  test:
+    run: melos exec -- fvm flutter test
+    description: 在所有包中运行测试
+    packageFilters:
+      dirExists: test
+
+  # 构建相关命令
+  build:all:
+    run: melos run build:android && melos run build:ios && melos run build:windows && melos run build:macos && melos run build:linux
+    description: 构建所有平台特定的应用
+
+  build:android:
+    run: melos exec --scope="rm_android" -- fvm flutter build apk
+    description: 构建 Android 应用
+
+  build:ios:
+    run: melos exec --scope="rm_ios" -- fvm flutter build ios --release --no-codesign
+    description: 构建 iOS 应用
+
+  build:windows:
+    run: melos exec --scope="rm_windows" -- fvm flutter build windows
+    description: 构建 Windows 应用
+
+  build:macos:
+    run: melos exec --scope="rm_macos" -- fvm flutter build macos
+    description: 构建 macOS 应用
+
+  build:linux:
+    run: melos exec --scope="rm_linux" -- fvm flutter build linux
+    description: 构建 Linux 应用
+
+  # 演示应用
+  run:demo:
+    run: melos exec --scope="rm_demo" -- fvm flutter run -d chrome
+    description: 在 Chrome 中运行演示应用
+
+  # 依赖管理
+  pub:get:
+    run: melos exec -- fvm flutter pub get
+    description: 在所有包中运行 pub get
+
+  pub:upgrade:
+    run: melos exec -- fvm flutter pub upgrade
+    description: 在所有包中运行 pub upgrade
+
+  # 清理命令
+  clean:
+    run: melos exec -- fvm flutter clean
+    description: 在所有包中运行 clean
+
+  # 代码生成
+  codegen:
+    run: melos exec -- fvm flutter pub run build_runner build --delete-conflicting-outputs
+    description: 在所有包中运行代码生成
+    packageFilters:
+      dependsOn: build_runner
+
+  # 项目设置
+  setup:
+    run: melos clean:all && melos bootstrap && melos pub:get
+    description: 清理、引导和获取包
+
+  # 发布包到 pub.dev
+  # publish:
+  #   run: melos publish
+  #   description: 发布包到 pub.dev
+
+  # 版本控制
+  version:
+    run: melos version
+    description: 版本控制包
+
+  # 代码质量相关
+  lint:
+    run: melos run analyze && melos run format
+    description: 运行所有静态分析检查
+
+  analyze:
+    run: melos exec --concurrency=1 -- fvm flutter analyze .
+    description: 在所有包中运行代码分析
+
+  format:
+    run: melos exec -- fvm flutter format .
+    description: 在所有包中运行代码格式化
+
+  # 文档生成
+  generate:docs:
+    run: melos exec -- dartdoc
+    description: 为所有包生成文档
+
+  merge:docs:
+    run: |
+      mkdir -p docs
+      melos exec -- cp -R doc/api docs/\${MELOS_PACKAGE_NAME}
+    description: 合并所有包的文档
+
+# IDE 配置
+ide:
+  intellij:
+    enabled: true
+    moduleNamePrefix: 'rm_'  # IntelliJ 模块名称前缀

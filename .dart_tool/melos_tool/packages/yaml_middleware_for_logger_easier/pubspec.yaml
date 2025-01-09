@@ -1,0 +1,13 @@
+# Generated file - do not commit this file.
+{
+  "name": "yaml_middleware_for_logger_easier",
+  "version": "1.0.0",
+  "environment": {
+    "sdk": ">=3.4.0 <4.0.0"
+  },
+  "description": "A starting point for Dart libraries or applications.",
+  "dev_dependencies": {
+    "lints": "^4.0.0",
+    "test": "^1.24.0"
+  }
+}

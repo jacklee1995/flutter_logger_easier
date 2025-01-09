@@ -1,0 +1,6 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Flutter Run -&gt; 'example'" type="FlutterRunConfigurationType" factoryName="Flutter">
+    <option name="filePath" value="$PROJECT_DIR$/packages//json_middleware_for_logger_easier//example/lib/main.dart" />
+    <method v="2" />
+  </configuration>
+</component>
