@@ -5,45 +5,57 @@ import 'package:flutter/material.dart' show debugPrint;
 import 'package:path_provider/path_provider.dart';
 import 'package:logger_easier/logger_easier.dart';
 
-final timeBasedMiddleware = FileMiddleware.createTimeBasedMiddleware(
-  logDirectory: '/path/to/logs',
-  baseFileName: 'app.log',
-  rotateInterval: Duration(days: 1),
-  maxBackups: 7,
-  compress: true,
-);
+// 获取日志目录路径
+Future<String> getLogDirectory() async {
+  final appDocDir = await getApplicationDocumentsDirectory();
+  return path.join(appDocDir.path, 'logs');
+}
 
-// 基于大小的日志中间件
-final sizeBasedMiddleware = FileMiddleware.createSizeBasedMiddleware(
-  logDirectory: '/path/to/logs',
-  baseFileName: 'app.log',
-  maxSize: 10 * 1024 * 1024, // 10MB
-  maxBackups: 5,
-  compress: true,
-);
+// 创建基于时间的日志中间件
+Future<FileMiddleware> createTimeBasedMiddleware() async {
+  final logDirectory = await getLogDirectory();
+  return FileMiddleware.createTimeBasedMiddleware(
+    logDirectory: logDirectory,
+    baseFileName: 'app.log',
+    rotateInterval: Duration(days: 1),
+    maxBackups: 7,
+    compress: true,
+  );
+}
 
-// 使用自定义配置
-final customMiddleware = FileMiddleware(
-  logDirectory: '/path/to/logs',
-  baseFileName: 'app.log',
-  rotateConfig: LogRotateConfig(
-    strategy: TimeBasedStrategy(
-      rotateInterval: Duration(hours: 12),
-      maxBackups: 10,
+// 创建基于大小的日志中间件
+Future<FileMiddleware> createSizeBasedMiddleware() async {
+  final logDirectory = await getLogDirectory();
+  return FileMiddleware.createSizeBasedMiddleware(
+    logDirectory: logDirectory,
+    baseFileName: 'app.log',
+    maxSize: 10 * 1024 * 1024, // 10MB
+    maxBackups: 5,
+    compress: true,
+  );
+}
+
+// 创建自定义配置的中间件
+Future<FileMiddleware> createCustomMiddleware() async {
+  final logDirectory = await getLogDirectory();
+  return FileMiddleware(
+    logDirectory: logDirectory,
+    baseFileName: 'app.log',
+    rotateConfig: LogRotateConfig(
+      strategy: TimeBasedStrategy(
+        rotateInterval: Duration(hours: 12),
+        maxBackups: 10,
+      ),
+      compressionHandler: GzipCompressionHandler(),
+      enableStorageMonitoring: true,
+      minimumFreeSpace: 200 * 1024 * 1024, // 200MB
     ),
-    compressionHandler: GzipCompressionHandler(),
-    enableStorageMonitoring: true,
-    minimumFreeSpace: 200 * 1024 * 1024, // 200MB
-  ),
-);
+  );
+}
 
 Future<Logger> initializeLogger() async {
-  // 获取应用文档目录
-  final appDocDir = await getApplicationDocumentsDirectory();
-  final logDirectory = path.join(appDocDir.path, 'logs');
-
-  debugPrint('appDocDir: $appDocDir');
-  debugPrint('logDirectory: $logDirectory');
+  final logDirectory = await getLogDirectory();
+  debugPrint('Log directory: $logDirectory');
 
   // 确保日志目录存在
   final directory = Directory(logDirectory);
@@ -62,12 +74,20 @@ Future<Logger> initializeLogger() async {
     debugPrint('Cannot write to log directory: $e\n$s');
   }
 
-  return Logger(
+  // 创建中间件
+  final timeBasedMiddleware = await createTimeBasedMiddleware();
+
+  final logger = Logger(
     minLevel: LogLevel.trace,
     outputFunction: debugPrint,
-    logDirectory: logDirectory,
-    baseFileName: 'app.log',
   );
+
+  // 添加中间件
+  logger.use(timeBasedMiddleware);
+  // 或者使用基于大小的中间件
+  // logger.use(sizeBasedMiddleware);
+
+  return logger;
 }
 
 // 全局变量，但是需要异步初始化

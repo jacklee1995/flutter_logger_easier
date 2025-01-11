@@ -25,15 +25,12 @@ class FileMiddleware extends AbstractLogMiddleware {
   final LogRotateConfig? rotateConfig;
 
   FileMiddleware({
-    AbstractLogFormatter? formatter,
-    AbstractLogFilter? filter,
+    super.formatter,
+    super.filter,
     required this.logDirectory,
     required this.baseFileName,
     this.rotateConfig,
-  }) : super(
-          formatter: formatter,
-          filter: filter,
-        );
+  });
 
   @override
   AbstractOutputer createOutputer() {

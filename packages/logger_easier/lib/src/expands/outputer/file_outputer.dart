@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:collection' show Queue;
 import 'dart:io' show File, FileMode, Directory, FileSystemException;
 import 'package:path/path.dart' as path;
 import 'package:synchronized/synchronized.dart' show Lock;
@@ -8,23 +6,27 @@ import '../../core/log_record.dart' show LogRecord;
 import '../../log_rotate/interfaces/compression_handler.dart'
     show CompressionHandler;
 import '../../log_rotate/interfaces/rotate_strategy.dart' show RotateStrategy;
-import '../../interfaces/abstract_outputer.dart' show AbstractOutputer;
 import '../../log_rotate/rotate_manager.dart' show LogRotateManager;
 import '../../log_rotate/strategies/size_based_strategy.dart'
     show SizeBasedStrategy;
 import '../formatters/base_formatter.dart' show BaseFormatter;
 import '../../interfaces/abstract_log_formatter.dart' show AbstractLogFormatter;
+import '../../interfaces/async_outputer.dart' show AsyncOutputer;
 
-class FilePrinter implements AbstractOutputer {
-  final String logDirectory;
-  final String baseFileName;
+/// 文件日志输出器
+///
+/// 负责将日志写入文件，并支持日志轮转功能。
+/// 继承自 [AsyncOutputer]，实现异步写入和批处理优化。
+class FilePrinter extends AsyncOutputer {
+  String logDirectory;
+  String baseFileName;
   final LogRotateManager rotateManager;
   final AbstractLogFormatter formatter;
+  final _lock = Lock();
+
   bool _isInitialized = false;
   late File _currentLogFile;
-  final Queue<String> _writeQueue = Queue();
-  final StreamController<void> _writeController = StreamController.broadcast();
-  final _lock = Lock();
+  DateTime _lastRotateTime = DateTime.now();
 
   FilePrinter({
     required this.logDirectory,
@@ -32,12 +34,53 @@ class FilePrinter implements AbstractOutputer {
     RotateStrategy? rotateStrategy,
     CompressionHandler? compressionHandler,
     AbstractLogFormatter? formatter,
+    super.maxQueueSize,
+    super.flushInterval,
+    super.maxRetries,
+    super.retryDelay,
   })  : rotateManager = LogRotateManager(
           strategy:
               rotateStrategy ?? SizeBasedStrategy(maxSize: 10 * 1024 * 1024),
           compressionHandler: compressionHandler,
         ),
         formatter = formatter ?? BaseFormatter();
+
+  @override
+  Future<void> processRecord(LogRecord record) async {
+    if (!_isInitialized) {
+      await init();
+    }
+
+    await _lock.synchronized(() async {
+      if (await _shouldRotate()) {
+        await _rotateLog();
+      }
+      await _writeLog(record);
+    });
+  }
+
+  @override
+  Future<void> processBatch(List<LogRecord> records) async {
+    if (!_isInitialized) {
+      await init();
+    }
+
+    await _lock.synchronized(() async {
+      if (await _shouldRotate()) {
+        await _rotateLog();
+      }
+
+      // 批量写入优化
+      final buffer = StringBuffer();
+      for (final record in records) {
+        buffer.writeln(formatter.format(record));
+      }
+      await _currentLogFile.writeAsString(
+        buffer.toString(),
+        mode: FileMode.append,
+      );
+    });
+  }
 
   @override
   Future<void> init() async {
@@ -57,7 +100,6 @@ class FilePrinter implements AbstractOutputer {
         // 3. 如果日志文件不存在，创建它
         if (!await _currentLogFile.exists()) {
           await _currentLogFile.create();
-          // 写入日志文件头部信息
           await _currentLogFile.writeAsString(
             '=== Log file created at ${DateTime.now()} ===\n',
             mode: FileMode.append,
@@ -67,9 +109,6 @@ class FilePrinter implements AbstractOutputer {
         // 4. 检查并执行必要的日志轮转
         await rotateManager.checkAndRotate(_currentLogFile);
       });
-
-      // 启动异步写入处理
-      _startWriteProcessor();
 
       _isInitialized = true;
     } catch (e, stackTrace) {
@@ -81,111 +120,135 @@ class FilePrinter implements AbstractOutputer {
     }
   }
 
-  void _startWriteProcessor() {
-    Timer.periodic(Duration(milliseconds: 100), (_) {
-      if (_writeQueue.isEmpty) return;
-
-      _lock.synchronized(() async {
-        while (_writeQueue.isNotEmpty) {
-          final content = _writeQueue.removeFirst();
-          await _currentLogFile.writeAsString(
-            content,
-            mode: FileMode.append,
-          );
-        }
-        _writeController.add(null);
-      });
-    });
+  /// 写入单条日志记录
+  Future<void> _writeLog(LogRecord record) async {
+    final output = formatter.format(record);
+    await _currentLogFile.writeAsString(
+      '$output\n',
+      mode: FileMode.append,
+    );
   }
 
-  @override
-  String printf(LogRecord record) {
-    final output = formatter.format(record);
-    _writeQueue.add('$output\n');
-    return output;
+  /// 执行日志轮转
+  Future<void> _rotateLog() async {
+    await rotateManager.checkAndRotate(_currentLogFile);
+    _lastRotateTime = DateTime.now();
+  }
+
+  /// 检查是否需要轮转
+  Future<bool> _shouldRotate() async {
+    final currentSize = await _currentLogFile.length();
+    return rotateManager.strategy.shouldRotate(
+      _currentLogFile,
+      currentSize,
+      _lastRotateTime,
+    );
   }
 
   @override
   Future<void> close() async {
-    _isInitialized = false;
-    // 在关闭前执行最后一次轮转检查
-    if (_currentLogFile.existsSync()) {
-      await rotateManager.checkAndRotate(_currentLogFile);
-    }
+    await _lock.synchronized(() async {
+      _isInitialized = false;
+      if (_currentLogFile.existsSync()) {
+        await rotateManager.checkAndRotate(_currentLogFile);
+      }
+      await super.close();
+    });
   }
 
   @override
-  String get name => 'FilePrinter';
-
-  @override
-  Map<String, dynamic> get config => {
+  Map<String, dynamic> getStats() => {
+        ...super.getStats(),
+        'isInitialized': _isInitialized,
         'logDirectory': logDirectory,
         'baseFileName': baseFileName,
+        'currentLogFile': _currentLogFile.path,
+        'currentFileSize':
+            _currentLogFile.existsSync() ? _currentLogFile.lengthSync() : 0,
+        'lastRotateTime': _lastRotateTime.toIso8601String(),
       };
 
+  // 基础实现
   @override
-  Future<void> updateConfig(Map<String, dynamic> newConfig) async {
-    // 如果配置发生变化，可能需要重新初始化
-    if (newConfig.containsKey('logDirectory') ||
-        newConfig.containsKey('baseFileName')) {
-      await close();
-      _isInitialized = false;
-      await init();
-    }
-  }
-
-  @override
-  bool get isClosed => !_isInitialized;
+  String get name => 'FilePrinter';
 
   @override
   List<String> get supportedLevels =>
       ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'FATAL'];
 
   @override
-  void setColorSupport(bool enabled) {
-    // 文件打印器不支持颜色
-  }
-
-  @override
-  Map<String, dynamic> getStats() {
-    return {
-      'isInitialized': _isInitialized,
-      'logDirectory': logDirectory,
-      'baseFileName': baseFileName,
-      'currentLogFile': _currentLogFile.path,
-      'currentFileSize':
-          _currentLogFile.existsSync() ? _currentLogFile.lengthSync() : 0,
-    };
-  }
-
-  @override
-  void resetStats() {
-    // 不需要重置统计信息
-  }
-
-  @override
-  String formatError(dynamic error, StackTrace? stackTrace) {
-    return 'Error: $error\nStackTrace: $stackTrace';
-  }
+  void setColorSupport(bool enabled) {} // 文件输出不支持颜色
 
   @override
   String formatMessage(dynamic message) => message.toString();
 
   @override
-  String getLevelColor(LogLevel level) {
-    // 文件打印器不使用颜色
-    return '';
+  String getLevelColor(LogLevel level) => '';
+
+  @override
+  String getLevelBgColor(LogLevel level) => '';
+
+  @override
+  String getLevelFgColor(LogLevel level) => '';
+
+  @override
+  Map<String, dynamic> get config => {
+        'logDirectory': logDirectory,
+        'baseFileName': baseFileName,
+        'maxQueueSize': maxQueueSize,
+        'flushInterval': flushInterval.inMilliseconds,
+        'maxRetries': maxRetries,
+        'retryDelay': retryDelay.inMilliseconds,
+        'rotateStrategy': rotateManager.strategy.runtimeType.toString(),
+        'compressionHandler':
+            rotateManager.compressionHandler?.runtimeType.toString(),
+      };
+
+  @override
+  Future<void> updateConfig(Map<String, dynamic> newConfig) async {
+    await _lock.synchronized(() async {
+      bool needsReinitialization = false;
+
+      // 检查是否需要重新初始化
+      if (newConfig.containsKey('logDirectory') ||
+          newConfig.containsKey('baseFileName')) {
+        needsReinitialization = true;
+      }
+
+      // 如果需要重新初始化
+      if (needsReinitialization) {
+        await close();
+
+        // 更新路径配置
+        logDirectory = newConfig['logDirectory'] as String? ?? logDirectory;
+        baseFileName = newConfig['baseFileName'] as String? ?? baseFileName;
+
+        _isInitialized = false;
+        await init();
+      }
+
+      // 更新其他配置
+      if (newConfig.containsKey('maxQueueSize')) {
+        // 这些配置的更新需要在 AsyncOutputer 中实现
+        // 暂时不处理
+      }
+    });
   }
 
   @override
-  String getLevelBgColor(LogLevel level) {
-    // 文件打印器不使用颜色
-    return '';
-  }
+  String formatError(dynamic error, StackTrace? stackTrace) {
+    final buffer = StringBuffer()
+      ..writeln('=== Error Log Entry ===')
+      ..writeln('Timestamp: ${DateTime.now().toIso8601String()}')
+      ..writeln('Error: $error');
 
-  @override
-  String getLevelFgColor(LogLevel level) {
-    // 文件打印器不使用颜色
-    return '';
+    if (stackTrace != null) {
+      buffer
+        ..writeln('Stack Trace:')
+        ..writeln(stackTrace.toString());
+    }
+
+    buffer.writeln('=== End Error Log Entry ===');
+    return buffer.toString();
   }
 }

@@ -63,37 +63,29 @@ class LogRotateManager {
   ///
   /// 返回:
   /// - 无返回值。如果轮转过程中出现异常，会捕获并输出错误，但不会影响日志记录功能。
-  Future<void> _rotateLog(File logFile) async {
-    try {
-      // 1. 获取轮转后的文件名
-      final rotatedFileName = strategy.getRotatedFileName(
-        logFile,
-        _getNextRotationIndex(logFile),
-      );
-      final rotatedFile = File(rotatedFileName);
+  Future<void> _rotateLog(File currentLogFile) async {
+    // 1. 获取新的轮转索引
+    final rotationIndex = await _getNextRotationIndex(currentLogFile);
 
-      // 2. 如果目标文件已存在，先删除
-      if (await rotatedFile.exists()) {
-        await rotatedFile.delete();
-      }
+    // 2. 生成轮转后的文件名
+    final rotatedFileName =
+        strategy.getRotatedFileName(currentLogFile, rotationIndex);
 
-      // 3. 重命名当前日志文件
-      await logFile.rename(rotatedFileName);
+    // 3. 重命名当前日志文件
+    final rotatedFile = File(rotatedFileName);
+    await currentLogFile.rename(rotatedFile.path);
 
-      // 4. 如果需要压缩且不是延迟压缩
-      if (compressionHandler != null && !delayCompress) {
-        await _compressLog(rotatedFile);
-      }
+    // 4. 创建新的日志文件
+    await currentLogFile.create();
 
-      // 5. 清理旧日志文件
-      await strategy.cleanupOldLogs(
-        logFile.parent,
-        path.basename(logFile.path),
-      );
-    } catch (e) {
-      print('Error during log rotation: $e');
-      // 轮转失败不应该影响正常的日志记录
+    // 5. 如果启用了压缩，执行压缩
+    if (compressionHandler != null && !delayCompress) {
+      await _compressLog(rotatedFile);
     }
+
+    // 6. 清理旧日志文件
+    await strategy.cleanupOldLogs(
+        currentLogFile.parent, path.basename(currentLogFile.path));
   }
 
   /// 获取下一个轮转索引
