@@ -1,165 +1,191 @@
-# Logger Easier
+### Logger Easier
 
 ![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/logo.png)
 
-## 🌟 Project Introduction
+A modern logging solution designed for Dart and Flutter applications. It offers rich features and flexible configuration options to simplify log management.
 
-Logger Easier is a modern logging management solution tailored specifically for Dart and Flutter applications. It provides a highly flexible and feature-rich logging system designed to simplify developers' log management while offering significant customization capabilities.
+![screenshot](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/screenshot.png)
 
-![alt text](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/example.png)
+---
 
-## ✨ Core Features
+## Table of Contents
 
-1. Multi-Level Log Management
-   - Supports 7 log levels: Trace, Debug, Info, Warn, Error, Critical, Fatal
-   - Fine-grained log level control
-   - Configurable minimum log recording level
+- [Table of Contents](#table-of-contents)
+- [✨ Key Features](#-key-features)
+- [📦 Installation](#-installation)
+- [🚀 Getting Started](#-getting-started)
+- [📖 Core Concepts](#-core-concepts)
+  - [Log Levels](#log-levels)
+  - [Log Middleware](#log-middleware)
+    - [Built-in Middleware](#built-in-middleware)
+    - [Custom Middleware](#custom-middleware)
+  - [Log Rotation](#log-rotation)
+    - [Rotation Strategies](#rotation-strategies)
+    - [Compression Handlers](#compression-handlers)
+    - [Rotation Configuration](#rotation-configuration)
+- [🛠️ Advanced Usage](#️-advanced-usage)
+  - [Custom Middleware](#custom-middleware-1)
+  - [Log Encryption](#log-encryption)
+- [✅ Best Practices](#-best-practices)
+- [📚 API Documentation](#-api-documentation)
+- [👏 Contribution Guide](#-contribution-guide)
+- [📜 License](#-license)
 
-2. Flexible Log Output
-   - Console output (supports colored logs)
-   - File logging
-   - Custom output destinations
-   - Log file rotation and compression
 
-3. Advanced Log Formatting
-   - Customizable log formats
-   - Supports multiple log format templates
-   - Rich log record metadata (timestamps, source, error information, etc.)
 
-4. Performance Monitoring
-   - Built-in performance measurement methods
-   - Async and sync operation performance tracking
-   - Automatic performance metric recording and reporting
+## ✨ Key Features
 
-5. Error Handling
-   - Automatic error reporting
-   - Stack trace recording
-   - Pluggable error reporter
+- **Multi-level Log Management**: Supports seven log levels (TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL), allowing fine-grained control over log output.
+- **Plugin-based Architecture**: Leverages middleware for extensibility. Easily integrate custom or third-party log handlers.
+- **Powerful Log Rotation**: Offers size-based and time-based log rotation strategies with automatic compression and cleanup of old logs.
+- **Diverse Output Options**: Supports console output (with colors), file output, custom outputs, and asynchronous logging.
+- **High-performance Asynchronous Mode**: Ensures non-blocking log recording with batch processing for optimized performance.
+- **Flexible Formatting and Filtering**: Customize log formats, including timestamps, levels, and error messages. Filter logs based on levels or patterns.
+- **Runtime Monitoring**: Includes built-in performance tracking and error handling, measuring operation durations and capturing uncaught exceptions automatically.
 
-6. Singleton Mode
-   - Unified global log management
-   - Simple initialization and usage
 
-7. Extensibility
-   - Supports custom log processors
-   - Pluggable components (printers, outputs, formatters, filters)
 
 ## 📦 Installation
 
-Add the dependency in `pubspec.yaml`:
+Add the dependency in your `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  logger_easier: ^0.0.1
+  logger_easier: ^latest_version
 ```
 
-Run `dart pub get` or `flutter pub get` to install the dependency.
+Then run:
 
-## 🚀 Quick Start
+```bash
+flutter pub get
+```
 
-### Basic Usage
+
+
+## 🚀 Getting Started
 
 ```dart
 import 'package:logger_easier/logger_easier.dart';
 
 void main() {
-  // Create default logger instance
-  final logger = Logger();
+  final logger = Logger(
+    minLevel: LogLevel.debug,
+    middlewares: [
+      ConsoleMiddleware(),
+      FileMiddleware(
+        logDirectory: 'logs',
+        baseFileName: 'app.log',
+        rotateConfig: LogRotateConfig(
+          strategy: SizeBasedStrategy(
+            maxSize: 10 * 1024 * 1024, // 10MB
+            maxBackups: 5,
+          ),
+        ),
+      ),
+    ],
+  );
 
-  // Log different levels
-  logger.debug('Debug information');
-  logger.info('General information');
-  logger.warn('Warning information');
-  logger.error('Error information', error: Exception('Sample error'));
+  logger.trace('This is a trace log');
+  logger.debug('This is a debug log');
+  logger.info('This is an info log');
+  logger.warn('This is a warning log');
+  logger.error('This is an error log', error: Exception('An error occurred'));
+  logger.critical('This is a critical error log');
+  logger.fatal('This is a fatal error log');
 }
 ```
 
-### File Logging Configuration
+
+
+## 📖 Core Concepts
+
+### Log Levels
+
+Logger Easier supports seven log levels, ranked from lowest to highest severity:
+
+- `TRACE`: Most detailed, usually for debugging.
+- `DEBUG`: For debugging during development.
+- `INFO`: General operational logs indicating progress.
+- `WARN`: Non-critical issues or warnings.
+- `ERROR`: Significant issues requiring attention.
+- `CRITICAL`: Severe errors affecting overall application stability.
+- `FATAL`: Irrecoverable errors, leading to application termination.
+
+Control the output level via the `minLevel` parameter in `Logger`. For example, setting `minLevel` to `LogLevel.info` outputs only `INFO` and above levels.
+
+
+
+### Log Middleware
+
+Middleware in Logger Easier processes logs in specific stages like formatting, filtering, and output. Combine various middleware to customize your logging pipeline.
+
+#### Built-in Middleware
+
+- **`ConsoleMiddleware`**: Outputs logs to the console with color coding.
+- **`FileMiddleware`**: Writes logs to files and supports rotation.
+
+#### Custom Middleware
+
+To create custom middleware, implement the `AbstractLogMiddleware` interface. Example: Sending logs to a remote server.
+
+
+
+### Log Rotation
+
+Prevent log files from becoming too large with automatic log rotation. 
+
+#### Rotation Strategies
+
+1. **Size-based** (`SizeBasedStrategy`): Rotate when file exceeds a specified size.
+2. **Time-based** (`TimeBasedStrategy`): Rotate at fixed intervals.
+
+#### Compression Handlers
+
+Logger Easier supports file compression during rotation to save space. Implement the `CompressionHandler` interface for custom algorithms or use the built-in `GzipCompressionHandler`.
+
+#### Rotation Configuration
+
+Customize rotation with `LogRotateConfig`, which includes options like rotation strategy, compression, and storage monitoring.
+
+
+
+## 🛠️ Advanced Usage
+
+### Custom Middleware
+
+Develop tailored middleware to integrate third-party services or unique log-handling logic.
+
+### Log Encryption
+
+Secure sensitive logs with encryption using the `LogEncryptor` class. Example:
 
 ```dart
-final logger = Logger(
-  logDirectory: '/path/to/logs',
-  baseFileName: 'app.log',
-  maxFileSize: 10 * 1024 * 1024, // 10MB
-  maxBackupIndex: 5,
-  compress: true,
-);
+final encryptor = LogEncryptor('your-secret-key');
+await encryptor.encrypt(File('logs/app.log'), File('logs/app.log.enc'));
 ```
 
-### Performance Measurement
+## ✅ Best Practices
 
-```dart
-// Async performance measurement
-final result = await logger.measurePerformance('complex_operation', () async {
-  return await complexOperation();
-});
+- Initialize logging early in the app lifecycle.
+- Choose appropriate log levels for clarity and performance.
+- Avoid sensitive data exposure in logs.
+- Regularly review and analyze logs for issues.
+- Use rotation and compression to manage storage.
 
-// Sync performance measurement
-final syncResult = logger.measureSyncPerformance('simple_operation', () {
-  return simpleOperation();
-});
-```
 
-### Custom Log Processing
+## 📚 API Documentation
 
-```dart
-final customLogger = Logger(
-  middlewares: [
-    LogMiddleware(
-      printer: CustomPrinter(),
-      output: CustomOutput(),
-      formatter: CustomFormatter(),
-      filter: CustomFilter(),
-    )
-  ]
-);
-```
+Explore detailed API documentation: [API Reference](https://pub.dev/documentation/logger_easier/latest/)
 
-## 🌈 Log Levels
 
-Logger Easier supports 7 log levels, increasing in severity:
+## 👏 Contribution Guide
 
-1. `trace`: Most detailed tracing information, for fine-grained diagnostics
-2. `debug`: Debug information, used for development and diagnostics
-3. `info`: Regular information, important application events
-4. `warn`: Warning information, potential problems or exceptional situations
-5. `error`: Error information, issues causing functional anomalies
-6. `critical`: Critical errors, severely affecting system operation
-7. `fatal`: Fatal errors, system unable to continue running
-
-## 📝 Best Practices
-
-1. Initialize logging during application startup
-2. Use appropriate log levels
-3. Disable verbose logs in production environments
-4. Regularly clean and archive log files
-5. Protect sensitive information, avoid recording sensitive data in logs
-
-## 🔒 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## 🤝 Contribution Guidelines
-
-Welcome to participate in the project through:
-
-- Submitting Issues
-- Initiating Pull Requests
-- Improving documentation
-- Sharing usage experiences
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed contribution guidelines.
-
-## 📞 Support and Contact
-
-- GitHub Issues: [Submit Issue](https://github.com/jacklee1995/flutter_logger_easier/issues)
-- Email: [291148484@163.com](mailto:291148484@163.com)
-
-## 🌍 Language Support
-
-- [English](README.md)
-- [中文](README_CN.md)
+We welcome contributions via issues, pull requests, or documentation improvements. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ---
 
-**Note**: Logger Easier is under continuous development, and the API may change. It is recommended to follow version updates. This documentation may be updated later than the code, so please be sure to refer to the example project for usage.
+## 📜 License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
+
+Enjoy using Logger Easier! If you find this library helpful, give us a ⭐️.
