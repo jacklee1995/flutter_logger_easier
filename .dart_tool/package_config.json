@@ -194,6 +194,12 @@
       "languageVersion": "3.1"
     },
     {
+      "name": "synchronized",
+      "rootUri": "file:///C:/Users/a2911/AppData/Local/Pub/Cache/hosted/pub.dev/synchronized-3.3.0+3",
+      "packageUri": "lib/",
+      "languageVersion": "3.5"
+    },
+    {
       "name": "term_glyph",
       "rootUri": "file:///C:/Users/a2911/AppData/Local/Pub/Cache/hosted/pub.dev/term_glyph-1.2.2",
       "packageUri": "lib/",
@@ -230,10 +236,10 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-01-09T14:43:50.009952Z",
+  "generated": "2025-01-11T03:41:31.084990Z",
   "generator": "pub",
-  "generatorVersion": "3.6.0",
-  "flutterRoot": "file:///D:/Program%20Files/Android/flutter",
-  "flutterVersion": "3.27.1",
+  "generatorVersion": "3.5.4",
+  "flutterRoot": "file:///C:/Users/a2911/fvm/versions/3.24.5",
+  "flutterVersion": "3.24.5",
   "pubCache": "file:///C:/Users/a2911/AppData/Local/Pub/Cache"
 }

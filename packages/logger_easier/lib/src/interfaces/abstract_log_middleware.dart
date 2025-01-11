@@ -27,9 +27,9 @@ abstract class AbstractLogMiddleware {
     AbstractLogFormatter? formatter,
     AbstractLogFilter? filter,
   }) {
-    this.outputer = outputer ?? createOutputer();
     this.formatter = formatter ?? createFormatter();
     this.filter = filter ?? createFilter();
+    this.outputer = outputer ?? createOutputer();
   }
 
   /// 创建一个日志输出器

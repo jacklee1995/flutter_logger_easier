@@ -1,116 +1,108 @@
 import 'dart:async';
+import 'dart:collection' show Queue;
 import 'dart:io' show File, FileMode, Directory, FileSystemException;
 import 'package:path/path.dart' as path;
+import 'package:synchronized/synchronized.dart' show Lock;
 import '../../core/log_level.dart' show LogLevel;
 import '../../core/log_record.dart' show LogRecord;
 import '../../log_rotate/interfaces/compression_handler.dart'
     show CompressionHandler;
 import '../../log_rotate/interfaces/rotate_strategy.dart' show RotateStrategy;
-import '../../utils/log_utils.dart' show LogUtils;
 import '../../interfaces/abstract_outputer.dart' show AbstractOutputer;
 import '../../log_rotate/rotate_manager.dart' show LogRotateManager;
 import '../../log_rotate/strategies/size_based_strategy.dart'
     show SizeBasedStrategy;
+import '../formatters/base_formatter.dart' show BaseFormatter;
+import '../../interfaces/abstract_log_formatter.dart' show AbstractLogFormatter;
 
 class FilePrinter implements AbstractOutputer {
   final String logDirectory;
   final String baseFileName;
   final LogRotateManager rotateManager;
+  final AbstractLogFormatter formatter;
   bool _isInitialized = false;
   late File _currentLogFile;
+  final Queue<String> _writeQueue = Queue();
+  final StreamController<void> _writeController = StreamController.broadcast();
+  final _lock = Lock();
 
   FilePrinter({
     required this.logDirectory,
     required this.baseFileName,
     RotateStrategy? rotateStrategy,
     CompressionHandler? compressionHandler,
-  }) : rotateManager = LogRotateManager(
+    AbstractLogFormatter? formatter,
+  })  : rotateManager = LogRotateManager(
           strategy:
               rotateStrategy ?? SizeBasedStrategy(maxSize: 10 * 1024 * 1024),
           compressionHandler: compressionHandler,
-        );
+        ),
+        formatter = formatter ?? BaseFormatter();
 
   @override
   Future<void> init() async {
     if (_isInitialized) return;
 
     try {
-      // 1. 确保日志目录存在
-      final directory = Directory(logDirectory);
-      if (!await directory.exists()) {
-        await directory.create(recursive: true);
-      }
+      await _lock.synchronized(() async {
+        // 1. 确保日志目录存在
+        final directory = Directory(logDirectory);
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
 
-      // 2. 初始化当前日志文件
-      _currentLogFile = File(path.join(logDirectory, baseFileName));
+        // 2. 初始化当前日志文件
+        _currentLogFile = File(path.join(logDirectory, baseFileName));
 
-      // 3. 如果日志文件不存在，创建它
-      if (!await _currentLogFile.exists()) {
-        await _currentLogFile.create();
-        // 写入日志文件头部信息
-        await _currentLogFile.writeAsString(
-          '=== Log file created at ${DateTime.now()} ===\n',
-          mode: FileMode.append,
-        );
-      }
+        // 3. 如果日志文件不存在，创建它
+        if (!await _currentLogFile.exists()) {
+          await _currentLogFile.create();
+          // 写入日志文件头部信息
+          await _currentLogFile.writeAsString(
+            '=== Log file created at ${DateTime.now()} ===\n',
+            mode: FileMode.append,
+          );
+        }
 
-      // 4. 检查并执行必要的日志轮转
-      await rotateManager.checkAndRotate(_currentLogFile);
+        // 4. 检查并执行必要的日志轮转
+        await rotateManager.checkAndRotate(_currentLogFile);
+      });
+
+      // 启动异步写入处理
+      _startWriteProcessor();
 
       _isInitialized = true;
     } catch (e, stackTrace) {
       _isInitialized = false;
       throw FileSystemException(
-        'Failed to initialize log file: $e',
+        'Failed to initialize log file: $e\n$stackTrace',
         logDirectory,
       );
     }
   }
 
+  void _startWriteProcessor() {
+    Timer.periodic(Duration(milliseconds: 100), (_) {
+      if (_writeQueue.isEmpty) return;
+
+      _lock.synchronized(() async {
+        while (_writeQueue.isNotEmpty) {
+          final content = _writeQueue.removeFirst();
+          await _currentLogFile.writeAsString(
+            content,
+            mode: FileMode.append,
+          );
+        }
+        _writeController.add(null);
+      });
+    });
+  }
+
   @override
   String printf(LogRecord record) {
-    if (!_isInitialized) {
-      throw StateError('FilePrinter not initialized. Call init() first.');
-    }
-
-    final message = _formatLogRecord(record);
-    _writeToFile(message);
-    return message;
-  }
-
-  void _writeToFile(String message) async {
-    if (!_isInitialized) {
-      throw StateError('FilePrinter not initialized. Call init() first.');
-    }
-
-    try {
-      await _currentLogFile.writeAsString(
-        '$message\n',
-        mode: FileMode.append,
-      );
-      await rotateManager.checkAndRotate(_currentLogFile);
-    } catch (e, stackTrace) {
-      // 写入失败时的处理
-      print('Failed to write to log file: $e\n$stackTrace');
-      // 可以考虑重新初始化或者使用备用输出方式
-    }
-  }
-
-  String _formatLogRecord(LogRecord record) {
-    final buffer = StringBuffer();
-    buffer.write('${LogUtils.getTimestamp()} ');
-    buffer.write('[${LogUtils.getLevelString(record.level)}] ');
-    buffer.write(record.message);
-
-    if (record.error != null) {
-      buffer.write('\nError: ${record.error}');
-    }
-
-    if (record.stackTrace != null) {
-      buffer.write('\nStack Trace:\n${record.stackTrace}');
-    }
-
-    return buffer.toString();
+    final output = formatter.format(record);
+    _writeQueue.add('$output\n');
+    return output;
   }
 
   @override

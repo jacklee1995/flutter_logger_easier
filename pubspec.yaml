@@ -6,3 +6,6 @@ environment:
 
 dev_dependencies:
   melos: ^6.1.0
+
+dependencies:
+  synchronized: ^3.1.0

@@ -30,11 +30,10 @@ class FileMiddleware extends AbstractLogMiddleware {
     required this.logDirectory,
     required this.baseFileName,
     this.rotateConfig,
-  }) {
-    outputer = createOutputer();
-    this.formatter = formatter ?? createFormatter();
-    this.filter = filter ?? createFilter();
-  }
+  }) : super(
+          formatter: formatter,
+          filter: filter,
+        );
 
   @override
   AbstractOutputer createOutputer() {
@@ -55,6 +54,7 @@ class FileMiddleware extends AbstractLogMiddleware {
       baseFileName: baseFileName,
       rotateStrategy: config.strategy,
       compressionHandler: config.compressionHandler,
+      formatter: formatter,
     );
   }
 
@@ -125,14 +125,16 @@ class FileMiddleware extends AbstractLogMiddleware {
     bool compress = true,
     AbstractLogFormatter? formatter,
     AbstractLogFilter? filter,
+    LogRotateConfig? rotateConfig,
   }) {
-    final config = LogRotateConfig(
-      strategy: SizeBasedStrategy(
-        maxSize: maxSize,
-        maxBackups: maxBackups,
-      ),
-      compressionHandler: compress ? GzipCompressionHandler() : null,
-    );
+    final config = rotateConfig ??
+        LogRotateConfig(
+          strategy: SizeBasedStrategy(
+            maxSize: maxSize,
+            maxBackups: maxBackups,
+          ),
+          compressionHandler: compress ? GzipCompressionHandler() : null,
+        );
 
     return FileMiddleware(
       logDirectory: logDirectory,

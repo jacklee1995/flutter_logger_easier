@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import '../expands/middlewares/file_middleware.dart';
+import '../log_rotate/rotate_config.dart';
 import 'log_level.dart' show LogLevel;
 import 'log_record.dart' show LogRecord;
 
@@ -60,9 +62,7 @@ class Logger {
   /// [performanceMonitor] 性能监控器
   /// [logDirectory] 日志文件存储目录
   /// [baseFileName] 日志文件基础名称
-  /// [maxFileSize] 单个日志文件最大大小
-  /// [maxBackupIndex] 日志文件备份数量
-  /// [compress] 是否压缩备份日志文件
+  /// [rotateConfig] 日志文件轮转配置
   factory Logger({
     ErrorReporter? errorReporter,
     LogLevel minLevel = LogLevel.debug,
@@ -70,43 +70,21 @@ class Logger {
     PerformanceMonitor? performanceMonitor,
     String? logDirectory,
     String baseFileName = 'app.log',
-    int maxFileSize = 10 * 1024 * 1024,
-    int maxBackupIndex = 5,
-    bool compress = false,
+    LogRotateConfig? rotateConfig,
   }) {
-    // 如果没有传入logDirectory,使用仅控制台输出
-    if (logDirectory == null) {
-      _instance ??= Logger._internal(
-        minLevel: minLevel,
-        errorReporter: errorReporter,
-        outputFunction: outputFunction,
-        performanceMonitor: performanceMonitor,
-      );
-    } else {
-      // 如果传入了logDirectory,自动创建文件日志中间件
-      _instance ??= Logger._internal(
-        minLevel: minLevel,
-        errorReporter: errorReporter,
-        outputFunction: outputFunction,
-        performanceMonitor: performanceMonitor,
-      )
-          // ..use(ConsoleMiddleware(
-          //   outputer: ConsolePrinter(
-          //     useColor: true,
-          //     maxLineLength: 160,
-          //     outputFunction: outputFunction,
-          //   ),
-          //   formatter: BaseFormatter(),
-          //   filter: LevelFilter(minLevel),
-          // ))
-          // ..use(FileMiddleware(
-          //   logDirectory: logDirectory,
-          //   baseFileName: baseFileName,
-          //   maxFileSize: maxFileSize,
-          //   maxBackupIndex: maxBackupIndex,
-          //   compress: compress,
-          // ))
-          ;
+    _instance ??= Logger._internal(
+      minLevel: minLevel,
+      errorReporter: errorReporter,
+      outputFunction: outputFunction,
+      performanceMonitor: performanceMonitor,
+    );
+
+    if (logDirectory != null) {
+      _instance!.use(FileMiddleware.createSizeBasedMiddleware(
+        logDirectory: logDirectory,
+        baseFileName: baseFileName,
+        rotateConfig: rotateConfig,
+      ));
     }
 
     return _instance!;

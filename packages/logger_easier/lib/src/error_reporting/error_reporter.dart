@@ -7,11 +7,14 @@ import 'crash_analytics.dart' show CrashAnalytics;
 
 class ErrorReporter {
   final Logger _logger;
+  final void Function(dynamic error, StackTrace? stackTrace)? onError;
   late final CrashAnalytics _crashAnalytics;
   bool _isInitialized = false;
 
-  ErrorReporter({Logger? logger})
-      : _logger = logger ??
+  ErrorReporter({
+    Logger? logger,
+    this.onError,
+  }) : _logger = logger ??
             Logger(
               minLevel: LogLevel.debug,
               outputFunction: print,
