@@ -180,12 +180,12 @@ Explore detailed API documentation: [API Reference](https://pub.dev/documentatio
 
 ## 👏 Contribution Guide
 
-We welcome contributions via issues, pull requests, or documentation improvements. Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+We welcome contributions via issues, pull requests, or documentation improvements. Please read [CONTRIBUTING.md](https://github.com/jacklee1995/flutter_logger_easier/blob/master/CONTRIBUTING.md) for details.
 
 ---
 
 ## 📜 License
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for more information.
+This project is licensed under the MIT License. See [LICENSE](https://github.com/jacklee1995/flutter_logger_easier/blob/master/LICENSE) for more information.
 
 Enjoy using Logger Easier! If you find this library helpful, give us a ⭐️.

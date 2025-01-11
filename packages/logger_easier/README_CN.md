@@ -16,19 +16,19 @@
   - [📖 核心概念](#-核心概念)
     - [日志级别](#日志级别)
     - [日志中间件](#日志中间件)
-      - [内置中间件](#内置中间件)
-      - [自定义中间件](#自定义中间件-1)
     - [日志轮转](#日志轮转)
       - [轮转策略](#轮转策略)
       - [压缩处理器](#压缩处理器)
       - [轮转配置](#轮转配置)
   - [🛠️ 高级用法](#️-高级用法)
-    - [自定义中间件](#自定义中间件-2)
-    - [性能监控](#性能监控)
-    - [错误处理](#错误处理)
+    - [自定义中间件](#自定义中间件)
+    - [日志加密](#日志加密)
+    - [日志存储](#日志存储)
   - [✅ 最佳实践](#-最佳实践)
   - [📚 API 文档](#-api-文档)
   - [👏 贡献指南](#-贡献指南)
+  - [📞 Support and Contact](#-support-and-contact)
+  - [🌍 Language Support](#-language-support)
   - [📜 许可证](#-许可证)
 
 ## ✨ 核心特性
@@ -347,7 +347,7 @@ final logger = Logger(
 - 改进文档
 - 分享使用体验
 
-请阅读 [CONTRIBUTING.md](CONTRIBUTING.md) 以获取详细的贡献指南。
+请阅读 [CONTRIBUTING.md](https://github.com/jacklee1995/flutter_logger_easier/blob/master/CONTRIBUTING.md) 以获取详细的贡献指南。
 
 ## 📞 Support and Contact
 
@@ -361,7 +361,7 @@ final logger = Logger(
 
 ## 📜 许可证
 
-本项目基于 MIT 许可证发布。详细信息请参考 [LICENSE](LICENSE) 文件。
+本项目基于 MIT 许可证发布。详细信息请参考 [LICENSE](https://github.com/jacklee1995/flutter_logger_easier/blob/master/LICENSE) 文件。
 
 ---
 
