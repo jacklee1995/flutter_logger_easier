@@ -27,6 +27,7 @@ class FilePrinter extends AsyncOutputer {
   bool _isInitialized = false;
   late File _currentLogFile;
   DateTime _lastRotateTime = DateTime.now();
+  int _currentSize = 0;
 
   FilePrinter({
     required this.logDirectory,
@@ -94,39 +95,69 @@ class FilePrinter extends AsyncOutputer {
           await directory.create(recursive: true);
         }
 
-        // 2. 初始化当前日志文件
-        _currentLogFile = File(path.join(logDirectory, baseFileName));
+        // 2. 生成带日期的文件名
+        final baseFileNameWithoutExt =
+            path.basenameWithoutExtension(baseFileName);
+        final extension = path.extension(baseFileName);
+        final dateStr = DateTime.now().toIso8601String().split('T')[0];
+        final fileName = '${baseFileNameWithoutExt}-$dateStr$extension';
 
-        // 3. 如果日志文件不存在，创建它
-        if (!await _currentLogFile.exists()) {
+        // 3. 初始化当前日志文件
+        _currentLogFile = File(path.join(logDirectory, fileName));
+
+        // 4. 如果日志文件存在，获取当前大小
+        if (await _currentLogFile.exists()) {
+          _currentSize = await _currentLogFile.length();
+        } else {
           await _currentLogFile.create();
           await _currentLogFile.writeAsString(
             '=== Log file created at ${DateTime.now()} ===\n',
             mode: FileMode.append,
           );
+          _currentSize = 0;
         }
 
-        // 4. 检查并执行必要的日志轮转
-        await rotateManager.checkAndRotate(_currentLogFile);
+        _isInitialized = true;
       });
-
-      _isInitialized = true;
-    } catch (e, stackTrace) {
-      _isInitialized = false;
-      throw FileSystemException(
-        'Failed to initialize log file: $e\n$stackTrace',
-        logDirectory,
-      );
+    } catch (e) {
+      print('Error initializing file printer: $e');
+      rethrow;
     }
   }
 
   /// 写入单条日志记录
   Future<void> _writeLog(LogRecord record) async {
-    final output = formatter.format(record);
+    final formattedLog = formatter.format(record);
+    final logSize = formattedLog.length;
+
+    // 1. 检查写入后文件大小是否会超过限制
+    if (_currentSize + logSize + 1 >
+        (rotateManager.strategy as SizeBasedStrategy).maxSize) {
+      print('Log file size will exceed limit, rotating...');
+      await rotateManager.checkAndRotate(_currentLogFile);
+      // 重新获取当前文件，因为可能已经被压缩
+      _currentLogFile = File(path.join(logDirectory, baseFileName));
+      // 确保文件存在
+      if (!await _currentLogFile.exists()) {
+        await _currentLogFile.create();
+      }
+      _currentSize = 0; // 重置文件大小
+    }
+
+    // 2. 写入新的日志
     await _currentLogFile.writeAsString(
-      '$output\n',
+      '$formattedLog\n',
       mode: FileMode.append,
     );
+    _currentSize += logSize + 1; // 更新当前文件大小
+
+    // 3. 写入后再次检查大小，确保不会超过限制
+    if (_currentSize >= (rotateManager.strategy as SizeBasedStrategy).maxSize) {
+      print('Log file size exceeded after write, rotating...');
+      await rotateManager.checkAndRotate(_currentLogFile);
+      _currentLogFile = File(path.join(logDirectory, baseFileName));
+      _currentSize = 0;
+    }
   }
 
   /// 执行日志轮转
@@ -137,12 +168,8 @@ class FilePrinter extends AsyncOutputer {
 
   /// 检查是否需要轮转
   Future<bool> _shouldRotate() async {
-    final currentSize = await _currentLogFile.length();
-    return rotateManager.strategy.shouldRotate(
-      _currentLogFile,
-      currentSize,
-      _lastRotateTime,
-    );
+    if (!_isInitialized) return false;
+    return await rotateManager.shouldRotate(_currentLogFile, _currentSize);
   }
 
   @override

@@ -47,12 +47,13 @@ class SizeBasedLoggerConfig {
       baseFileName: 'app.log',
       rotateConfig: LogRotateConfig(
         strategy: SizeBasedStrategy(
-          maxSize: 1 * 1024 * 1024, // 1MB
-          maxBackups: 5,
+          maxSize: 100 * 1024, // 100KB (用于测试)
+          maxBackups: 5, // 测试用较小的值
         ),
         compressionHandler: GzipCompressionHandler(
           onProgress: (message) => print('Compression progress: $message'),
         ),
+        archiveDir: path.join(logDirectory, 'archives'), // 指定归档目录
         enableStorageMonitoring: true,
         minimumFreeSpace: 100 * 1024 * 1024, // 100MB
       ),

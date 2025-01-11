@@ -9,6 +9,9 @@ import 'dart:io' show Directory, File;
 ///
 /// 不同实现可以支持基于文件大小、时间等条件的轮转策略。
 abstract class RotateStrategy {
+  /// 最大备份数量
+  int get maxBackups;
+
   /// 检查是否需要进行日志轮转
   ///
   /// [logFile] 当前日志文件

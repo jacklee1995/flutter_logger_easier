@@ -14,6 +14,9 @@ import 'interfaces/rotate_strategy.dart';
 /// - 轮转队列大小 [rotationQueueSize]：设置异步队列的大小，控制并发轮转的数量，默认为 100。
 /// - 存储监控 [enableStorageMonitoring]：是否启用存储空间监控，确保日志文件轮转时有足够的空间，默认为 `true`。
 /// - 最低剩余空间 [minimumFreeSpace]：存储空间的最小剩余要求，默认为 100MB。
+/// - 是否在文件名中包含日期 [includeDate]：是否在文件名中包含日期。
+/// - 是否在文件名中包含具体时间 [includeTime]：是否在文件名中包含具体时间。
+/// - 日期时间分隔符 [separator]：日期时间分隔符。
 ///
 /// 参数：
 /// - [strategy] 日志轮转策略。必需的参数。
@@ -24,6 +27,10 @@ import 'interfaces/rotate_strategy.dart';
 /// - [rotationQueueSize] 异步轮转队列的最大大小，默认为 100。
 /// - [enableStorageMonitoring] 是否启用存储监控，默认为 `true`。
 /// - [minimumFreeSpace] 存储空间的最小剩余要求，默认为 100MB。
+/// - [includeDate] 是否在文件名中包含日期。
+/// - [includeTime] 是否在文件名中包含具体时间。
+/// - [separator] 日期时间分隔符。
+/// - [archiveDir] 归档目录。
 class LogRotateConfig {
   /// 日志轮转策略
   ///
@@ -66,6 +73,18 @@ class LogRotateConfig {
   /// 配置存储空间的最小剩余要求，单位为字节。默认为 100MB。
   final int minimumFreeSpace;
 
+  /// 是否在文件名中包含日期
+  final bool includeDate;
+
+  /// 是否在文件名中包含具体时间
+  final bool includeTime;
+
+  /// 日期时间分隔符
+  final String separator;
+
+  /// 归档目录
+  final String? archiveDir;
+
   /// 构造函数
   ///
   /// 创建一个日志轮转配置对象，允许根据需要自定义日志轮转行为。
@@ -79,6 +98,10 @@ class LogRotateConfig {
   /// - [rotationQueueSize] 可选，异步队列大小，默认为 100。
   /// - [enableStorageMonitoring] 可选，是否启用存储监控，默认为 `true`。
   /// - [minimumFreeSpace] 可选，指定最低剩余空间，默认为 100MB。
+  /// - [includeDate] 可选，是否在文件名中包含日期。
+  /// - [includeTime] 可选，是否在文件名中包含具体时间。
+  /// - [separator] 可选，日期时间分隔符。
+  /// - [archiveDir] 可选，指定归档目录。
   LogRotateConfig({
     required this.strategy,
     this.compressionHandler,
@@ -88,5 +111,9 @@ class LogRotateConfig {
     this.rotationQueueSize = 100,
     this.enableStorageMonitoring = true,
     this.minimumFreeSpace = 100 * 1024 * 1024, // 100MB
+    this.includeDate = true,
+    this.includeTime = false,
+    this.separator = '_',
+    this.archiveDir,
   });
 }

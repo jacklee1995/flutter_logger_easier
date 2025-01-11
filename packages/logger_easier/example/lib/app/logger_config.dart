@@ -67,7 +67,7 @@ class LoggerConfig {
     return _LogConfig(
       logDirectory: logDirectory,
       baseFileName: 'app.log',
-      maxFileSize: 10 * 1024 * 1024, // 10MB
+      maxFileSize: 1 * 1024 * 1024, // 1MB
       maxBackups: 7,
       rotateInterval: const Duration(days: 1),
     );

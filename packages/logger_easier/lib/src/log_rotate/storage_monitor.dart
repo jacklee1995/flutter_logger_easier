@@ -1,4 +1,4 @@
-import 'dart:io' show Directory, Process, Platform;
+import 'dart:io' show Process, Platform;
 
 class StorageMonitor {
   final int minimumFreeSpace;

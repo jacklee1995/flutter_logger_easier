@@ -1,5 +1,6 @@
 import 'dart:io' show Directory, File;
 import 'package:path/path.dart' as path;
+import 'package:intl/intl.dart';
 
 import '../interfaces/rotate_strategy.dart' show RotateStrategy;
 
@@ -15,19 +16,23 @@ class SizeBasedStrategy implements RotateStrategy {
   final int maxSize;
 
   /// 最大备份数量
+  @override
   final int maxBackups;
+
+  /// 上次检查日期
+  DateTime? _lastCheckDate;
 
   /// 构造函数
   ///
   /// 创建一个新的基于大小的日志轮转策略实例。
   ///
   /// 参数:
-  /// - [maxSize] 最大文件大小（字节）。
-  /// - [maxBackups] 最大备份数量，默认值为5。
+  /// - [maxSize] 最大文件大小（字节），默认值为99MB。
+  /// - [maxBackups] 最大备份数量，默认值为99。
   SizeBasedStrategy({
-    required this.maxSize,
-    this.maxBackups = 5,
-  });
+    int? maxSize,
+    this.maxBackups = 99,
+  }) : maxSize = maxSize ?? (99 * 1024 * 1024); // 默认99MB
 
   /// 检查是否需要进行日志轮转
   ///
@@ -42,7 +47,27 @@ class SizeBasedStrategy implements RotateStrategy {
   /// - 如果当前文件大小超过 [maxSize]，返回 `true`，表示需要进行轮转；否则返回 `false`。
   @override
   bool shouldRotate(File logFile, int currentSize, DateTime lastRotateTime) {
-    return currentSize >= maxSize;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    // 检查是否是新的一天
+    if (_lastCheckDate == null || _lastCheckDate != today) {
+      _lastCheckDate = today;
+
+      // 如果文件存在且不为空，在每天第一次写入时进行轮转
+      if (logFile.existsSync() && currentSize > 0) {
+        print('Daily check: rotating log file at the start of new day');
+        return true;
+      }
+    }
+
+    // 检查文件大小
+    final shouldRotate = currentSize >= maxSize;
+    if (shouldRotate) {
+      print(
+          'Log rotation needed: current size ($currentSize bytes) >= max size ($maxSize bytes)');
+    }
+    return shouldRotate;
   }
 
   /// 获取轮转后的文件名
@@ -51,13 +76,24 @@ class SizeBasedStrategy implements RotateStrategy {
   ///
   /// 参数:
   /// - [originalFile] 原始日志文件。
-  /// - [rotateIndex] 轮转索引。
+  /// - [rotationIndex] 轮转索引。
   ///
   /// 返回:
   /// - 返回生成的轮转文件名，格式为：`原始文件名.轮转索引`。
   @override
-  String getRotatedFileName(File originalFile, int rotateIndex) {
-    return '${originalFile.path}.$rotateIndex';
+  String getRotatedFileName(File originalFile, int rotationIndex) {
+    final dir = originalFile.parent;
+    final baseFileName = path.basenameWithoutExtension(originalFile.path);
+    final extension = path.extension(originalFile.path);
+
+    // 如果是每日轮转，添加日期后缀
+    if (_lastCheckDate != null) {
+      final dateStr = DateFormat('yyyyMMdd').format(_lastCheckDate!);
+      return path.join(
+          dir.path, '$baseFileName.$dateStr.$rotationIndex$extension');
+    }
+
+    return path.join(dir.path, '$baseFileName.$rotationIndex$extension');
   }
 
   /// 清理过期的日志文件

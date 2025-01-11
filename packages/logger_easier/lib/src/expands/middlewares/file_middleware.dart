@@ -123,6 +123,9 @@ class FileMiddleware extends AbstractLogMiddleware {
     AbstractLogFormatter? formatter,
     AbstractLogFilter? filter,
     LogRotateConfig? rotateConfig,
+    bool includeDate = true,
+    bool includeTime = false,
+    String separator = '_',
   }) {
     final config = rotateConfig ??
         LogRotateConfig(
@@ -131,6 +134,9 @@ class FileMiddleware extends AbstractLogMiddleware {
             maxBackups: maxBackups,
           ),
           compressionHandler: compress ? GzipCompressionHandler() : null,
+          includeDate: includeDate,
+          includeTime: includeTime,
+          separator: separator,
         );
 
     return FileMiddleware(
