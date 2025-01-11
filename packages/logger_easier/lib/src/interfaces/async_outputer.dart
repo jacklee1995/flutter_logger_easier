@@ -23,49 +23,17 @@ abstract class AsyncOutputer implements AbstractOutputer {
   int _failedAttempts = 0;
 
   // 配置项
-  int _maxQueueSize;
-  Duration _flushInterval;
-  int _maxRetries;
-  Duration _retryDelay;
-
-  // Getters
-  int get maxQueueSize => _maxQueueSize;
-  Duration get flushInterval => _flushInterval;
-  int get maxRetries => _maxRetries;
-  Duration get retryDelay => _retryDelay;
-
-  // Setters
-  set maxQueueSize(int value) {
-    if (value > 0) {
-      _maxQueueSize = value;
-    }
-  }
-
-  set flushInterval(Duration value) {
-    _flushInterval = value;
-    _flushTimer?.cancel();
-    _startFlushTimer();
-  }
-
-  set maxRetries(int value) {
-    if (value > 0) {
-      _maxRetries = value;
-    }
-  }
-
-  set retryDelay(Duration value) {
-    _retryDelay = value;
-  }
+  int maxQueueSize;
+  Duration flushInterval;
+  int maxRetries;
+  Duration retryDelay;
 
   AsyncOutputer({
-    int maxQueueSize = _defaultMaxQueueSize,
-    Duration flushInterval = _defaultFlushInterval,
-    int maxRetries = _defaultMaxRetries,
-    Duration retryDelay = _defaultRetryDelay,
-  })  : _maxQueueSize = maxQueueSize,
-        _flushInterval = flushInterval,
-        _maxRetries = maxRetries,
-        _retryDelay = retryDelay {
+    this.maxQueueSize = _defaultMaxQueueSize,
+    this.flushInterval = _defaultFlushInterval,
+    this.maxRetries = _defaultMaxRetries,
+    this.retryDelay = _defaultRetryDelay,
+  }) {
     _startProcessor();
     _startFlushTimer();
   }
@@ -196,14 +164,14 @@ abstract class AsyncOutputer implements AbstractOutputer {
     if (newConfig.containsKey('maxQueueSize')) {
       final newSize = newConfig['maxQueueSize'] as int;
       if (newSize > 0) {
-        _maxQueueSize = newSize;
+        maxQueueSize = newSize;
       }
     }
 
     if (newConfig.containsKey('flushInterval')) {
       final newInterval = newConfig['flushInterval'] as int;
       if (newInterval > 0) {
-        _flushInterval = Duration(milliseconds: newInterval);
+        flushInterval = Duration(milliseconds: newInterval);
         _flushTimer?.cancel();
         _startFlushTimer();
       }
@@ -212,14 +180,14 @@ abstract class AsyncOutputer implements AbstractOutputer {
     if (newConfig.containsKey('maxRetries')) {
       final newRetries = newConfig['maxRetries'] as int;
       if (newRetries > 0) {
-        _maxRetries = newRetries;
+        maxRetries = newRetries;
       }
     }
 
     if (newConfig.containsKey('retryDelay')) {
       final newDelay = newConfig['retryDelay'] as int;
       if (newDelay > 0) {
-        _retryDelay = Duration(milliseconds: newDelay);
+        retryDelay = Duration(milliseconds: newDelay);
       }
     }
   }

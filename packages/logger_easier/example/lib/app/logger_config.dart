@@ -3,6 +3,23 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:logger_easier/logger_easier.dart';
 
+/// 日志配置数据类
+class _LogConfig {
+  final String logDirectory;
+  final String baseFileName;
+  final int maxFileSize;
+  final int maxBackups;
+  final Duration rotateInterval;
+
+  const _LogConfig({
+    required this.logDirectory,
+    required this.baseFileName,
+    required this.maxFileSize,
+    required this.maxBackups,
+    required this.rotateInterval,
+  });
+}
+
 /// 日志管理器配置类
 class LoggerConfig {
   /// 单例实例
@@ -117,21 +134,4 @@ class LoggerConfig {
   Future<void> close() async {
     await _logger.close();
   }
-}
-
-/// 日志配置数据类
-class _LogConfig {
-  final String logDirectory;
-  final String baseFileName;
-  final int maxFileSize;
-  final int maxBackups;
-  final Duration rotateInterval;
-
-  const _LogConfig({
-    required this.logDirectory,
-    required this.baseFileName,
-    required this.maxFileSize,
-    required this.maxBackups,
-    required this.rotateInterval,
-  });
 }

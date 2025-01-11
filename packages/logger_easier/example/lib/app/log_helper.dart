@@ -1,9 +1,12 @@
 import 'package:logger_easier/logger_easier.dart';
-import 'logger_config.dart';
+import 'size_based_logger.dart';
+// import 'time_based_logger.dart';  // 预留基于时间的配置
 
 /// 日志工具类
 class Log {
-  static Logger get _logger => LoggerConfig.instance.logger;
+  static Logger get _logger => SizeBasedLoggerConfig.instance.logger;
+  // 如果需要使用基于时间的日志系统，注释上面的行，取消注释下面的行
+  // static Logger get _logger => TimeBasedLoggerConfig.instance.logger;
 
   /// 记录跟踪级别日志
   static void trace(String message, {dynamic error, StackTrace? stackTrace}) =>
