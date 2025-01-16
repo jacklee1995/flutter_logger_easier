@@ -1,10 +1,10 @@
 ### Logger Easier
 
-![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/logo.png)
+![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/logo.png)
 
 A modern logging solution designed for Dart and Flutter applications. It offers rich features and flexible configuration options to simplify log management.
 
-![screenshot](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/screenshot.png)
 
 ---
 

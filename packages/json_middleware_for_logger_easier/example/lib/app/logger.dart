@@ -22,9 +22,6 @@ Future<Logger> initializeLogger() async {
     outputFunction: debugPrint,
     logDirectory: logDirectory,
     baseFileName: 'app.log',
-    maxFileSize: 10 * 1024 * 1024, // 10MB
-    maxBackupIndex: 5,
-    compress: true,
   );
 
   // 只添加 JSON 中间件

@@ -44,16 +44,16 @@ class SizeBasedLoggerConfig {
     // 创建基于大小的文件中间件
     final fileMiddleware = FileMiddleware(
       logDirectory: logDirectory,
-      baseFileName: 'app.log',
+      baseFileName: 'server.log',
       rotateConfig: LogRotateConfig(
         strategy: SizeBasedStrategy(
-          maxSize: 100 * 1024, // 100KB (用于测试)
-          maxBackups: 5, // 测试用较小的值
+          maxSize: 10 * 1024, // 10KB (便于测试轮转和压缩)
+          maxBackups: 5,
         ),
         compressionHandler: GzipCompressionHandler(
           onProgress: (message) => print('Compression progress: $message'),
         ),
-        archiveDir: path.join(logDirectory, 'archives'), // 指定归档目录
+        archiveDir: path.join(logDirectory, 'log_archives'), // 归档目录
         enableStorageMonitoring: true,
         minimumFreeSpace: 100 * 1024 * 1024, // 100MB
       ),

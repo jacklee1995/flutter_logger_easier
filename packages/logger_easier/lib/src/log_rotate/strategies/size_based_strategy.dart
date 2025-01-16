@@ -34,6 +34,7 @@ class SizeBasedStrategy implements RotateStrategy {
     this.maxBackups = 99,
   }) : maxSize = maxSize ?? (99 * 1024 * 1024); // 默认99MB
 
+  /// TODO: currentSize 跟新不正常
   /// 检查是否需要进行日志轮转
   ///
   /// 根据当前日志文件的大小和上次轮转时间，判断是否需要执行轮转操作。
@@ -66,7 +67,11 @@ class SizeBasedStrategy implements RotateStrategy {
     if (shouldRotate) {
       print(
           'Log rotation needed: current size ($currentSize bytes) >= max size ($maxSize bytes)');
+    } else {
+      print(
+          '不需轮转: current size ($currentSize bytes) < max size ($maxSize bytes)');
     }
+
     return shouldRotate;
   }
 

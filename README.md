@@ -1,8 +1,10 @@
  # Logger Easier
 
+[中文](https://gitee.com/jacklee1995/flutter_logger_easier/blob/master/README.md)
+
 A modern logging management solution designed for Dart and Flutter applications. It provides rich features and flexible configuration options, making logging management easier.
 
-![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/logo.png)
+![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/logo.png)
 
 ## Table of Contents
 
@@ -20,7 +22,7 @@ A modern logging management solution designed for Dart and Flutter applications.
 
 Logger Easier adopts a multi-package project structure and is managed and coordinated using [Melos](https://github.com/invertase/melos). This structure allows us to separate core functionality and optional features into different packages, improving modularity and maintainability.
 
-```
+```tree
 logger_easier/
 ├── packages/
 │   ├── logger_easier/                # Core logging package

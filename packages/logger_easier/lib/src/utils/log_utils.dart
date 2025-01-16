@@ -79,8 +79,6 @@ class LogUtils {
         return 'CRITICAL';
       case LogLevel.fatal:
         return 'FATAL';
-      default:
-        return 'UNKNOWN';
     }
   }
 

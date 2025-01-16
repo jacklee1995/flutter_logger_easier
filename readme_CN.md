@@ -1,8 +1,10 @@
 # Logger Easier
 
+[English](https://github.com/jacklee1995/flutter_logger_easier/blob/master/README.md)
+
 一个为 Dart 和 Flutter 应用程序设计的现代化日志管理解决方案。提供了丰富的功能和灵活的配置选项,让日志管理变得更简单。
 
-![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/logo.png)
+![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/logo.png)
 
 ## 目录
 
@@ -20,7 +22,7 @@
 
 Logger Easier 采用了多包管理的项目结构,使用 [Melos](https://github.com/invertase/melos) 进行管理和协调。这种结构允许我们将核心功能和可选功能分离到不同的包中,提高了模块化和可维护性。
 
-```
+```tree
 logger_easier/
 ├── packages/
 │   ├── logger_easier/                # 核心日志包

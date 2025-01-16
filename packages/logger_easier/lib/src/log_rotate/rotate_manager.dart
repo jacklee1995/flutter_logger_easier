@@ -4,7 +4,6 @@ import 'package:path/path.dart' as path;
 
 import 'interfaces/compression_handler.dart' show CompressionHandler;
 import 'interfaces/rotate_strategy.dart' show RotateStrategy;
-import 'strategies/size_based_strategy.dart';
 
 /// 日志轮转管理器
 ///
@@ -26,6 +25,7 @@ import 'strategies/size_based_strategy.dart';
 class LogRotateManager {
   final RotateStrategy strategy;
   final CompressionHandler? compressionHandler;
+  late String compressedExtension;
   final bool delayCompress;
   final bool includeDate;
   final bool includeTime;
@@ -34,7 +34,7 @@ class LogRotateManager {
   final String archiveDir;
 
   DateTime _lastRotateTime = DateTime.now();
-  int _currentSize = 0; // 当前日志文件大小
+  int _currentSize = 0;
 
   LogRotateManager({
     required this.strategy,
@@ -45,9 +45,9 @@ class LogRotateManager {
     this.separator = '_',
     this.dateTimeFormat,
     String? archiveDir,
-  }) : archiveDir = archiveDir ?? 'archives' {
-    print('LogRotateManager initialized with strategy: $strategy');
-  }
+  })  : archiveDir = archiveDir ?? 'archives',
+        compressedExtension =
+            compressionHandler?.compressedExtension ?? '.gz' {}
 
   /// 更新当前文件大小
   Future<void> updateCurrentSize(File logFile) async {
@@ -94,15 +94,14 @@ class LogRotateManager {
   Future<void> checkAndRotate(File logFile) async {
     try {
       await updateCurrentSize(logFile);
-      print('Current file size: $_currentSize bytes');
+
       if (strategy.shouldRotate(logFile, _currentSize, _lastRotateTime)) {
-        print('Rotating log file...');
         await _rotateLog(logFile);
         _lastRotateTime = DateTime.now();
         _currentSize = 0;
       }
-    } catch (e) {
-      print('Error checking file size: $e');
+    } catch (e, s) {
+      print('Error checking file size: $e\n$s');
     }
   }
 
@@ -110,12 +109,13 @@ class LogRotateManager {
   Future<bool> shouldRotate(File logFile, int currentSize) async {
     if (!await logFile.exists()) return false;
     _currentSize = currentSize;
+    // 策略决定轮转
     final shouldRotate =
         strategy.shouldRotate(logFile, _currentSize, _lastRotateTime);
     if (shouldRotate) {
       _lastRotateTime = DateTime.now();
-      print('Should rotate: true, current size: $_currentSize bytes');
     }
+
     return shouldRotate;
   }
 
@@ -153,7 +153,7 @@ class LogRotateManager {
         final allFiles =
             await _getRotatedFiles(directory, baseFileName, extension);
 
-        // 压缩所有文件
+        // TODO:压缩所有文件未必是.gz，得定义的压缩处理器才能决定
         final timestamp = _generateTimestamp();
         final compressedFileName = '$baseFileName-$timestamp.gz';
         final compressedFile = File(path.join(
@@ -210,7 +210,7 @@ class LogRotateManager {
         .where((entity) =>
             entity is File &&
             path.basename(entity.path).startsWith(baseFileName) &&
-            path.basename(entity.path).endsWith('.gz'))
+            path.basename(entity.path).endsWith(compressedExtension))
         .map((entity) => entity as File)
         .toList();
 
@@ -251,7 +251,7 @@ class LogRotateManager {
             entity is File &&
             path.basename(entity.path).startsWith('$baseFileName.') &&
             path.basename(entity.path).endsWith(extension) &&
-            _isRotatedLogFile(entity as File, baseFileName))
+            _isRotatedLogFile(entity, baseFileName))
         .map((entity) => entity as File)
         .toList();
     return allFiles;

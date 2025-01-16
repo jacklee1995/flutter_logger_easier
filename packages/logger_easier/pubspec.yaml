@@ -3,7 +3,7 @@ description: A modern logging management solution tailored specifically for Dart
 homepage: https://github.com/jacklee1995/flutter_logger_easier
 repository: https://github.com/jacklee1995/flutter_logger_easier/tree/master/packages/logger_easier
 
-version: 0.0.3
+version: 0.0.3+1
 
 environment:
   sdk: ">=3.4.0 <4.0.0"

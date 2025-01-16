@@ -1,7 +1,4 @@
 import 'dart:io' show File, FileSystemException;
-import '../core/log_level.dart' show LogLevel;
-import '../core/log_record.dart' show LogRecord;
-import '../utils/log_utils.dart' show LogUtils;
 
 /// 日志分析器，用于分析日志文件中的各种模式和统计信息
 class LogAnalyzer {

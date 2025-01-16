@@ -1,4 +1,4 @@
-import 'dart:io' show File, FileMode, Directory, FileSystemException;
+import 'dart:io' show File, FileMode, Directory;
 import 'package:path/path.dart' as path;
 import 'package:synchronized/synchronized.dart' show Lock;
 import '../../core/log_level.dart' show LogLevel;
@@ -12,6 +12,8 @@ import '../../log_rotate/strategies/size_based_strategy.dart'
 import '../formatters/base_formatter.dart' show BaseFormatter;
 import '../../interfaces/abstract_log_formatter.dart' show AbstractLogFormatter;
 import '../../interfaces/async_outputer.dart' show AsyncOutputer;
+import 'dart:async' show Timer;
+import '../../log_rotate/rotate_config.dart' show LogRotateConfig;
 
 /// 文件日志输出器
 ///
@@ -28,6 +30,8 @@ class FilePrinter extends AsyncOutputer {
   late File _currentLogFile;
   DateTime _lastRotateTime = DateTime.now();
   int _currentSize = 0;
+  Timer? _rotateTimer;
+  final LogRotateConfig? _rotateConfig;
 
   FilePrinter({
     required this.logDirectory,
@@ -35,6 +39,7 @@ class FilePrinter extends AsyncOutputer {
     RotateStrategy? rotateStrategy,
     CompressionHandler? compressionHandler,
     AbstractLogFormatter? formatter,
+    LogRotateConfig? rotateConfig,
     super.maxQueueSize,
     super.flushInterval,
     super.maxRetries,
@@ -43,8 +48,14 @@ class FilePrinter extends AsyncOutputer {
           strategy:
               rotateStrategy ?? SizeBasedStrategy(maxSize: 10 * 1024 * 1024),
           compressionHandler: compressionHandler,
+          delayCompress: rotateConfig?.delayCompress ?? true,
+          includeDate: rotateConfig?.includeDate ?? true,
+          includeTime: rotateConfig?.includeTime ?? false,
+          separator: rotateConfig?.separator ?? '_',
+          archiveDir: rotateConfig?.archiveDir,
         ),
-        formatter = formatter ?? BaseFormatter();
+        formatter = formatter ?? BaseFormatter(),
+        _rotateConfig = rotateConfig;
 
   @override
   Future<void> processRecord(LogRecord record) async {
@@ -58,6 +69,7 @@ class FilePrinter extends AsyncOutputer {
       }
       await _writeLog(record);
     });
+    await _updateFileSize();
   }
 
   @override
@@ -81,6 +93,7 @@ class FilePrinter extends AsyncOutputer {
         mode: FileMode.append,
       );
     });
+    await _updateFileSize();
   }
 
   @override
@@ -100,14 +113,15 @@ class FilePrinter extends AsyncOutputer {
             path.basenameWithoutExtension(baseFileName);
         final extension = path.extension(baseFileName);
         final dateStr = DateTime.now().toIso8601String().split('T')[0];
-        final fileName = '${baseFileNameWithoutExt}-$dateStr$extension';
+        final fileName = '$baseFileNameWithoutExt-$dateStr$extension';
 
         // 3. 初始化当前日志文件
         _currentLogFile = File(path.join(logDirectory, fileName));
 
         // 4. 如果日志文件存在，获取当前大小
+        // 否则创建文件，并输出创建信息
         if (await _currentLogFile.exists()) {
-          _currentSize = await _currentLogFile.length();
+          await _updateFileSize();
         } else {
           await _currentLogFile.create();
           await _currentLogFile.writeAsString(
@@ -118,6 +132,9 @@ class FilePrinter extends AsyncOutputer {
         }
 
         _isInitialized = true;
+
+        // 启动定时器，定期检查是否需要轮转
+        _startRotateTimer();
       });
     } catch (e) {
       print('Error initializing file printer: $e');
@@ -125,8 +142,28 @@ class FilePrinter extends AsyncOutputer {
     }
   }
 
+  _updateFileSize() async {
+    _currentSize = await _currentLogFile.length();
+  }
+
+  // 定时检查是否需要轮转
+  void _startRotateTimer() {
+    final checkInterval = _rotateConfig?.checkInterval ?? Duration(minutes: 5);
+    _rotateTimer = Timer.periodic(
+      checkInterval,
+      (_) async {
+        await _lock.synchronized(() async {
+          if (await _shouldRotate()) {
+            await _rotateLog();
+          }
+        });
+      },
+    );
+  }
+
   /// 写入单条日志记录
   Future<void> _writeLog(LogRecord record) async {
+    print('writeLog: 写入单条日志记录');
     final formattedLog = formatter.format(record);
     final logSize = formattedLog.length;
 
@@ -158,6 +195,7 @@ class FilePrinter extends AsyncOutputer {
       _currentLogFile = File(path.join(logDirectory, baseFileName));
       _currentSize = 0;
     }
+    print('写入后的_currentSize为$_currentSize');
   }
 
   /// 执行日志轮转
@@ -168,13 +206,19 @@ class FilePrinter extends AsyncOutputer {
 
   /// 检查是否需要轮转
   Future<bool> _shouldRotate() async {
-    if (!_isInitialized) return false;
+    print('_shouldRotate 判断是否轮转');
+    if (!_isInitialized) {
+      return false;
+    }
+    print('日志输出器中，_currentSize为$_currentSize');
+    // TODO: 需要从 rotateManager 中获取 currentSize
     return await rotateManager.shouldRotate(_currentLogFile, _currentSize);
   }
 
   @override
   Future<void> close() async {
     await _lock.synchronized(() async {
+      _rotateTimer?.cancel();
       _isInitialized = false;
       if (_currentLogFile.existsSync()) {
         await rotateManager.checkAndRotate(_currentLogFile);
@@ -201,13 +245,10 @@ class FilePrinter extends AsyncOutputer {
 
   @override
   List<String> get supportedLevels =>
-      ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'FATAL'];
+      ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICLE', 'FATAL'];
 
   @override
   void setColorSupport(bool enabled) {} // 文件输出不支持颜色
-
-  @override
-  String formatMessage(dynamic message) => message.toString();
 
   @override
   String getLevelColor(LogLevel level) => '';
@@ -217,6 +258,9 @@ class FilePrinter extends AsyncOutputer {
 
   @override
   String getLevelFgColor(LogLevel level) => '';
+
+  @override
+  String formatMessage(dynamic message) => message.toString();
 
   @override
   Map<String, dynamic> get config => {

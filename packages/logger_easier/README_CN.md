@@ -1,10 +1,10 @@
 # Logger Easier
 
-![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/logo.png)
+![logo](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/logo.png)
 
 一个为 Dart 和 Flutter 应用程序设计的现代化日志管理解决方案。提供了丰富的功能和灵活的配置选项,让日志管理变得更简单。
 
-![screenshot](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/screenshot.png)
+![screenshot](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/screenshot.png)
 
 ## 目录
 
