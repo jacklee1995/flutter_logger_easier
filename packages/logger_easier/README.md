@@ -134,6 +134,8 @@ To create custom middleware, implement the `AbstractLogMiddleware` interface. Ex
 
 Prevent log files from becoming too large with automatic log rotation. 
 
+![logger_easier_for_log_rotate](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/logger_easier_for_log_rotate.gif)
+
 #### Rotation Strategies
 
 1. **Size-based** (`SizeBasedStrategy`): Rotate when file exceeds a specified size.
