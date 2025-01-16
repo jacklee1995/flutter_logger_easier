@@ -1,6 +1,6 @@
  # Logger Easier
 
-[中文](https://gitee.com/jacklee1995/flutter_logger_easier/blob/master/README.md)
+[中文](https://gitee.com/jacklee1995/flutter_logger_easier/blob/master/readme_CN.md)
 
 A modern logging management solution designed for Dart and Flutter applications. It provides rich features and flexible configuration options, making logging management easier.
 
