@@ -1,5 +1,7 @@
 ### 日志轮转库的功能简介
 
+![logger_easier_for_log_rotate](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/logger_easier_for_log_rotate.gif)
+
 当前的日志轮转库具备以下功能：
 
 #### 1. **日志轮转功能**
