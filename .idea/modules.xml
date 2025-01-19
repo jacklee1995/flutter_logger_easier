@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/packages/logger_easier/example/rm_eg_logger_easier.iml" filepath="$PROJECT_DIR$/packages/logger_easier/example/rm_eg_logger_easier.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/json_middleware_for_logger_easier/example/rm_example.iml" filepath="$PROJECT_DIR$/packages/json_middleware_for_logger_easier/example/rm_example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/examples/flutter_eg_logger_easier/rm_flutter_eg_logger_easier.iml" filepath="$PROJECT_DIR$/examples/flutter_eg_logger_easier/rm_flutter_eg_logger_easier.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/json_middleware_for_logger_easier/rm_json_middleware_for_logger_easier.iml" filepath="$PROJECT_DIR$/packages/json_middleware_for_logger_easier/rm_json_middleware_for_logger_easier.iml" />
       <module fileurl="file://$PROJECT_DIR$/packages/logger_easier/rm_logger_easier.iml" filepath="$PROJECT_DIR$/packages/logger_easier/rm_logger_easier.iml" />
-      <module fileurl="file://$PROJECT_DIR$/packages/logger_easier/example/rm_logger_easier_example.iml" filepath="$PROJECT_DIR$/packages/logger_easier/example/rm_logger_easier_example.iml" />
-      <module fileurl="file://$PROJECT_DIR$/packages/yaml_middleware_for_logger_easier/rm_yaml_middleware_for_logger_easier.iml" filepath="$PROJECT_DIR$/packages/yaml_middleware_for_logger_easier/rm_yaml_middleware_for_logger_easier.iml" />
       <module fileurl="file://$PROJECT_DIR$/rm_flutter_logger_easier.iml" filepath="$PROJECT_DIR$/rm_flutter_logger_easier.iml" />
     </modules>
   </component>

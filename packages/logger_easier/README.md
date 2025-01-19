@@ -31,8 +31,6 @@ A modern logging solution designed for Dart and Flutter applications. It offers 
 - [👏 Contribution Guide](#-contribution-guide)
 - [📜 License](#-license)
 
-
-
 ## ✨ Key Features
 
 - **Multi-level Log Management**: Supports seven log levels (TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL, FATAL), allowing fine-grained control over log output.
@@ -42,8 +40,6 @@ A modern logging solution designed for Dart and Flutter applications. It offers 
 - **High-performance Asynchronous Mode**: Ensures non-blocking log recording with batch processing for optimized performance.
 - **Flexible Formatting and Filtering**: Customize log formats, including timestamps, levels, and error messages. Filter logs based on levels or patterns.
 - **Runtime Monitoring**: Includes built-in performance tracking and error handling, measuring operation durations and capturing uncaught exceptions automatically.
-
-
 
 ## 📦 Installation
 
@@ -59,8 +55,6 @@ Then run:
 ```bash
 flutter pub get
 ```
-
-
 
 ## 🚀 Getting Started
 
@@ -95,8 +89,6 @@ void main() {
 }
 ```
 
-
-
 ## 📖 Core Concepts
 
 ### Log Levels
@@ -113,8 +105,6 @@ Logger Easier supports seven log levels, ranked from lowest to highest severity:
 
 Control the output level via the `minLevel` parameter in `Logger`. For example, setting `minLevel` to `LogLevel.info` outputs only `INFO` and above levels.
 
-
-
 ### Log Middleware
 
 Middleware in Logger Easier processes logs in specific stages like formatting, filtering, and output. Combine various middleware to customize your logging pipeline.
@@ -128,11 +118,9 @@ Middleware in Logger Easier processes logs in specific stages like formatting, f
 
 To create custom middleware, implement the `AbstractLogMiddleware` interface. Example: Sending logs to a remote server.
 
-
-
 ### Log Rotation
 
-Prevent log files from becoming too large with automatic log rotation. 
+Prevent log files from becoming too large with automatic log rotation.
 
 ![logger_easier_for_log_rotate](https://raw.githubusercontent.com/jacklee1995/flutter_logger_easier/refs/heads/master/images/logger_easier_for_log_rotate.gif)
 
@@ -148,8 +136,6 @@ Logger Easier supports file compression during rotation to save space. Implement
 #### Rotation Configuration
 
 Customize rotation with `LogRotateConfig`, which includes options like rotation strategy, compression, and storage monitoring.
-
-
 
 ## 🛠️ Advanced Usage
 
@@ -174,11 +160,18 @@ await encryptor.encrypt(File('logs/app.log'), File('logs/app.log.enc'));
 - Regularly review and analyze logs for issues.
 - Use rotation and compression to manage storage.
 
+## 项目示例
+
+基础示例参见[logger_easier/example](https://gitee.com/jacklee1995/flutter_logger_easier/tree/master/packages/logger_easier/example)，更多的示例可以在[examples](https://gitee.com/jacklee1995/flutter_logger_easier/tree/master/examples)目录下找到。
+
+
+## Project Example
+
+For basic examples, refer to [logger_easier/example](https://github.com/jacklee1995/flutter_logger_easier/tree/master/packages/logger_easier/example). More examples can be found in the [examples](https://github.com/jacklee1995/flutter_logger_easier/tree/master/examples) directory. 
 
 ## 📚 API Documentation
 
 Explore detailed API documentation: [API Reference](https://pub.dev/documentation/logger_easier/latest/)
-
 
 ## 👏 Contribution Guide
 

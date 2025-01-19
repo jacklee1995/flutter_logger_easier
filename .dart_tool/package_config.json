@@ -111,7 +111,7 @@
     },
     {
       "name": "melos",
-      "rootUri": "file:///C:/Users/a2911/AppData/Local/Pub/Cache/hosted/pub.dev/melos-6.3.0",
+      "rootUri": "file:///C:/Users/a2911/AppData/Local/Pub/Cache/hosted/pub.dev/melos-6.3.1",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -171,9 +171,9 @@
     },
     {
       "name": "pubspec_parse",
-      "rootUri": "file:///C:/Users/a2911/AppData/Local/Pub/Cache/hosted/pub.dev/pubspec_parse-1.4.0",
+      "rootUri": "file:///C:/Users/a2911/AppData/Local/Pub/Cache/hosted/pub.dev/pubspec_parse-1.5.0",
       "packageUri": "lib/",
-      "languageVersion": "3.2"
+      "languageVersion": "3.6"
     },
     {
       "name": "source_span",
@@ -236,7 +236,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2025-01-11T14:19:17.703598Z",
+  "generated": "2025-01-19T02:30:35.955358Z",
   "generator": "pub",
   "generatorVersion": "3.6.0",
   "flutterRoot": "file:///D:/Program%20Files/Android/flutter",

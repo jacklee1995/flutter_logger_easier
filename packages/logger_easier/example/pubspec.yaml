@@ -1,5 +1,6 @@
-name: logger_easier_example
-description: "Demonstrates how to use the logger_easier plugin."
+name: eg_logger_easier
+description: "A sample example to demonstrates how to use the logger_easier."
+version: 1.0.0
 
 publish_to: 'none'
 
@@ -7,24 +8,9 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
-  flutter:
-    sdk: flutter
-
-  logger_easier:
+  logger_easier: 
     path: ../
-  path: ^1.9.1
-  path_provider: ^2.1.5
 
 dev_dependencies:
-  # integration_test:
-  #   sdk: flutter
-  # flutter_test:
-  #   sdk: flutter
-
-  flutter_lints: ^5.0.0
-  build_runner: ^2.4.13
-
-
-flutter:
-  uses-material-design: true
-
+  lints: ^5.0.0
+  test: ^1.24.0

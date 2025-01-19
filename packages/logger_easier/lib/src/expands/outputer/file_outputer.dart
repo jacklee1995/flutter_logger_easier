@@ -9,7 +9,7 @@ import '../../log_rotate/interfaces/rotate_strategy.dart' show RotateStrategy;
 import '../../log_rotate/rotate_manager.dart' show LogRotateManager;
 import '../../log_rotate/strategies/size_based_strategy.dart'
     show SizeBasedStrategy;
-import '../formatters/base_formatter.dart' show BaseFormatter;
+import '../formatters/inline_formatter.dart' show InlineFormatter;
 import '../../interfaces/abstract_log_formatter.dart' show AbstractLogFormatter;
 import '../../interfaces/async_outputer.dart' show AsyncOutputer;
 import 'dart:async' show Timer;
@@ -54,7 +54,7 @@ class FilePrinter extends AsyncOutputer {
           separator: rotateConfig?.separator ?? '_',
           archiveDir: rotateConfig?.archiveDir,
         ),
-        formatter = formatter ?? BaseFormatter(),
+        formatter = formatter ?? InlineFormatter(),
         _rotateConfig = rotateConfig;
 
   @override

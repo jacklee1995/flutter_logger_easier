@@ -16,7 +16,7 @@ export 'src/expands/filters/level_filter.dart';
 export 'src/expands/filters/log_filters.dart';
 
 // 日志格式化器
-export 'src/expands/formatters/base_formatter.dart';
+export 'src/expands/formatters/inline_formatter.dart';
 
 // 日志输出器
 export 'src/expands/outputer/console_outputer.dart';

@@ -12,7 +12,7 @@ import '../../log_rotate/strategies/time_based_strategy.dart'
     show TimeBasedStrategy;
 import '../../log_rotate/compression/gzip_handler.dart'
     show GzipCompressionHandler;
-import '../formatters/base_formatter.dart' show BaseFormatter;
+import '../formatters/inline_formatter.dart' show InlineFormatter;
 import '../filters/level_filter.dart' show LevelFilter;
 import '../outputer/file_outputer.dart' show FilePrinter;
 
@@ -57,7 +57,7 @@ class FileMiddleware extends AbstractLogMiddleware {
 
   @override
   AbstractLogFormatter createFormatter() {
-    return BaseFormatter();
+    return InlineFormatter();
   }
 
   @override

@@ -137,8 +137,3 @@ scripts:
       melos exec -- cp -R doc/api docs/\${MELOS_PACKAGE_NAME}
     description: 合并所有包的文档
 
-# IDE 配置
-ide:
-  intellij:
-    enabled: true
-    moduleNamePrefix: 'rm_'  # IntelliJ 模块名称前缀

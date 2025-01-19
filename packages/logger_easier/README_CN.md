@@ -339,6 +339,10 @@ final logger = Logger(
 
 详细的 API 文档请参考: [API Reference](https://pub.dev/documentation/logger_easier/latest/)
 
+## 项目示例
+
+基础示例参见[logger_easier/example](https://gitee.com/jacklee1995/flutter_logger_easier/tree/master/packages/logger_easier/example)，更多的示例可以在[examples](https://gitee.com/jacklee1995/flutter_logger_easier/tree/master/examples)目录下找到。
+
 ## 👏 贡献指南
 
 如果您在使用过程中遇到任何问题或有任何建议，欢迎提出 Issue 或提交 Pull Request。

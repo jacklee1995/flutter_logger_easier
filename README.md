@@ -25,10 +25,10 @@ Logger Easier adopts a multi-package project structure and is managed and coordi
 ```tree
 logger_easier/
 ├── packages/
-│   ├── logger_easier/                # Core logging package
-│   ├── json_middleware/              # JSON middleware package
-│   └── ...                           # Other middleware packages
-├── example/                          # Example project
+│   ├── logger_easier/                # Core logging 
+│   ├── json_middleware/              # JSON middleware 
+│   └── ...                           # 其他中间件包
+├── examples/                         # More example project
 └── ...
 ```
 

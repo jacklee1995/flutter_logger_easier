@@ -28,7 +28,7 @@ logger_easier/
 │   ├── logger_easier/                # 核心日志包
 │   ├── json_middleware/              # JSON 中间件包
 │   └── ...                           # 其他中间件包
-├── example/                          # 示例项目
+├── examples/                         # 更多示例项目
 └── ...
 ```
 

@@ -5,7 +5,7 @@ import '../../interfaces/abstract_log_middleware.dart'
 import '../../interfaces/abstract_outputer.dart' show AbstractOutputer;
 import '../../interfaces/abstract_log_filter.dart' show AbstractLogFilter;
 import '../../interfaces/abstract_log_formatter.dart' show AbstractLogFormatter;
-import '../formatters/base_formatter.dart' show BaseFormatter;
+import '../formatters/inline_formatter.dart' show InlineFormatter;
 import '../outputer/console_outputer.dart' show ConsolePrinter;
 import '../filters/level_filter.dart' show LevelFilter;
 
@@ -30,7 +30,7 @@ class ConsoleMiddleware extends AbstractLogMiddleware {
 
   @override
   AbstractLogFormatter createFormatter() {
-    return BaseFormatter();
+    return InlineFormatter();
   }
 
   @override
