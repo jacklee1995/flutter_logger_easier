@@ -160,10 +160,6 @@ await encryptor.encrypt(File('logs/app.log'), File('logs/app.log.enc'));
 - Regularly review and analyze logs for issues.
 - Use rotation and compression to manage storage.
 
-## 项目示例
-
-基础示例参见[logger_easier/example](https://gitee.com/jacklee1995/flutter_logger_easier/tree/master/packages/logger_easier/example)，更多的示例可以在[examples](https://gitee.com/jacklee1995/flutter_logger_easier/tree/master/examples)目录下找到。
-
 
 ## Project Example
 
